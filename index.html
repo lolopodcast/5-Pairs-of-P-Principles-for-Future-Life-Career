@@ -104,6 +104,7 @@ const dict = {
     flip_status: "已讀 {read} / 已顯示 {shown} / 總計 {total}",
     flip_next: "下一組", flip_retry: "重新開始",
     audio_read: "語音導覽",
+    audio_pause: "暫停", audio_resume: "繼續", audio_stop: "停止",
     quiz_title: "模組知識檢定",
     quiz_status: "答對 {correct} / 已答 {answered} / 總計 {total}",
     quiz_next: "下一組", quiz_retry: "重新測驗",
@@ -149,6 +150,7 @@ const dict = {
     m0_title: "人生與職涯的五個 P 原則",
     m0_intro: "各位畢業生、親愛的家長、親友，還有各位師長們，大家好，恭喜你們！今天是個開心的日子，也是個人生的重要里程碑。在你們準備離開校園、迎向未來的時候，駱世民教授想分享一個簡單的架構——「人生與職涯的五個 P 原則」。這套架構並不是要給你一份標準答案，而是希望成為一面鏡子，讓你在往後的日子裡，無論是面對求職的徬徨、職場的挑戰，或是人生階段的轉換，都能停下來想一想：我現在的選擇，呼應了哪些原則？還缺了哪一塊？這五對原則環環相扣——熱情與意義讓工作有方向，專業與進步讓你站得住腳，回報與繁榮讓生活有保障，同儕與夥伴讓旅途不孤單，耐心與堅持則是撐過低潮的韌性。本課程將逐一帶你認識這五對原則的內涵、彼此的關聯，以及如何在日常生活中具體實踐。希望這份指引，能陪伴你走過從校園到社會的轉折，也能在未來遇到迷惘時，成為你重新定錨的依據。",
     m0_diagram_alt: "五對 P 原則環繞中心構面的關係示意圖",
+    m0_diagram_hint: "點擊圖中任一節點，可直接跳轉至對應單元",
     m0_why: "為什麼這套原則值得花時間理解？",
     m0_why_desc: "畢業是人生的分水嶺，許多人在踏入職場初期容易只看眼前的薪資與職稱，卻忽略了長期的自我實現與生活平衡。這五對 P 原則提供一個整體性的檢視角度，幫助你在做生涯決策時，同時兼顧內在動機、專業成長、現實生活、人際支持與心理韌性，避免「顧此失彼」，讓你的職涯發展走得既長遠又踏實。",
     m0_modules: [
@@ -307,6 +309,7 @@ const dict = {
     flip_status: "Read {read} / Shown {shown} / Total {total}",
     flip_next: "Next", flip_retry: "Restart",
     audio_read: "Audio Guide",
+    audio_pause: "Pause", audio_resume: "Resume", audio_stop: "Stop",
     quiz_title: "Module Knowledge Check",
     quiz_status: "Correct {correct} / Answered {answered} / Total {total}",
     quiz_next: "Next", quiz_retry: "Retry",
@@ -352,6 +355,7 @@ const dict = {
     m0_title: "5 Pairs of P-Principles for Life and Career",
     m0_intro: "Graduates, dear family, friends, and faculty—welcome, and congratulations! Today is a wonderful milestone. As you leave this campus and head into the future, Prof. Shihmin Lo wants to share a simple framework: the \"Five Pairs of P-Principles.\" This is not meant to hand you a ready-made answer, but to act as a mirror—so that whenever you face the uncertainty of job-hunting, the challenges of the workplace, or transitions in life, you can pause and ask yourself: which of these principles does my current choice reflect, and which might still be missing? These five pairs are deeply interconnected—Passion and Purpose give your work direction, Profession and Progress help you stand firm, Payoff and Prosperity provide security for life, Peers and Partners make sure the journey is never lonely, and Patience and Persistence build the resilience that carries you through hard times. This course will walk you through each pair—what it means, how it connects to the others, and how to put it into practice in everyday life. We hope this guidance will accompany you through the transition from campus to society, and serve as a compass whenever you find yourself uncertain about the path ahead.",
     m0_diagram_alt: "Diagram showing the five pairs of P-Principles around a central hub",
+    m0_diagram_hint: "Click any node in the diagram to jump directly to that module",
     m0_why: "Why is this framework worth your time?",
     m0_why_desc: "Graduation marks a major turning point in life. Many people, in their early career, focus only on salary and job titles, overlooking long-term self-fulfillment and life balance. These five pairs of P-Principles offer a holistic lens—helping you weigh intrinsic motivation, professional growth, practical living needs, social support, and psychological resilience together, so that your career path can be both sustainable and grounded.",
     m0_modules: [
@@ -651,6 +655,39 @@ const ModuleQuiz = ({ questions, t, moduleId, onQuizSubmit, moduleName, onTrackC
   );
 };
 
+const TTSControls = ({ t, lang, text, speak, speaking, paused, pauseResumeSpeak, stopSpeak, isActive, label, onTrackClick, size = 'sm' }) => {
+  const playing = isActive && speaking;
+  const sizeCls = size === 'sm'
+    ? 'px-2.5 py-1 text-[11px] gap-1'
+    : 'px-3 py-1.5 text-xs gap-1.5';
+  const iconCls = size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5';
+  const handlePlayPause = () => {
+    if (onTrackClick) onTrackClick();
+    if (playing) { pauseResumeSpeak(); return; }
+    speak(text, lang);
+  };
+  const handleStop = () => {
+    if (onTrackClick) onTrackClick();
+    stopSpeak();
+  };
+  return (
+    <div className="inline-flex items-center gap-1.5">
+      <button onClick={handlePlayPause} title={playing && paused ? t.audio_resume : (playing ? t.audio_pause : t.audio_read)}
+        className={`flex items-center font-bold border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 ${sizeCls}`}>
+        {playing && !paused ? <IconPause className={iconCls} /> : <IconPlay className={iconCls} />}
+        <span>{playing && paused ? t.audio_resume : (playing ? t.audio_pause : (label || t.audio_read))}</span>
+      </button>
+      {playing && (
+        <button onClick={handleStop} title={t.audio_stop}
+          className={`flex items-center font-bold border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 ${sizeCls}`}>
+          <IconSquare className={iconCls} />
+          <span className="hidden sm:inline">{t.audio_stop}</span>
+        </button>
+      )}
+    </div>
+  );
+};
+
 const H2 = ({ children }) => (
   <h2 className="text-2xl md:text-3xl font-serif font-black text-[#004030] dark:text-[#D8C3A5] mb-4 mt-10 first:mt-0">{children}</h2>
 );
@@ -814,6 +851,8 @@ function App() {
   const [active, setActive] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [speaking, setSpeaking] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const [speakingSource, setSpeakingSource] = useState(null);
   const [toast, setToast] = useState(null);
   const [analytics, setAnalytics] = useState({});
   const [studentInfo, setStudentInfo] = useState({ group: '', dept: '', id: '', nameEn: '', nameZh: '' });
@@ -907,23 +946,37 @@ function App() {
     });
   };
 
-  const speak = (text, voiceLang) => {
+  const speak = (text, voiceLang, source) => {
     if (!('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
     const utter = new SpeechSynthesisUtterance(text);
     utter.lang = voiceLang === 'zh' ? 'zh-TW' : 'en-GB';
     const voices = window.speechSynthesis.getVoices();
     const preferred = voiceLang === 'zh'
-      ? voices.find(v => v.name.includes('Yating') || v.lang === 'zh-TW')
+      ? voices.find(v => v.name.includes('Yating') || v.name.includes('雅婷') || v.lang === 'zh-TW')
       : voices.find(v => v.name.includes('Daniel') || (v.lang === 'en-GB' && v.name.toLowerCase().includes('male')));
     if (preferred) utter.voice = preferred;
-    utter.onend = () => setSpeaking(false);
-    utter.onerror = () => setSpeaking(false);
+    utter.onend = () => { setSpeaking(false); setPaused(false); setSpeakingSource(null); };
+    utter.onerror = () => { setSpeaking(false); setPaused(false); setSpeakingSource(null); };
     setSpeaking(true);
+    setPaused(false);
+    setSpeakingSource(source || null);
     window.speechSynthesis.speak(utter);
   };
 
-  const stopSpeak = () => { window.speechSynthesis.cancel(); setSpeaking(false); };
+  const pauseResumeSpeak = () => {
+    if (!('speechSynthesis' in window)) return;
+    if (!speaking) return;
+    if (paused) { window.speechSynthesis.resume(); setPaused(false); }
+    else { window.speechSynthesis.pause(); setPaused(true); }
+  };
+
+  const stopSpeak = () => {
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    setSpeaking(false);
+    setPaused(false);
+    setSpeakingSource(null);
+  };
 
   const headerSpeechText = () => {
     if (active === 0) return t.m0_title + '. ' + t.m0_intro;
@@ -932,11 +985,6 @@ function App() {
     if (active === IDX_RES) return t.mres_title + '. ' + t.mres_desc;
     if (active === IDX_ANA) return t.analytics_title + '. ' + t.analytics_desc;
     return t.brand;
-  };
-
-  const toggleHeaderSpeak = () => {
-    if (speaking) { stopSpeak(); return; }
-    speak(headerSpeechText(), lang);
   };
 
   const moduleNavLabel = (i) => {
@@ -1006,16 +1054,17 @@ function App() {
   );
 
   const renderModuleContent = () => {
-    if (active === 0) return <ModuleZero t={t} lang={lang} onStart={() => { setActive(1); trackClick(); }} />;
+    if (active === 0) return <ModuleZero t={t} lang={lang} onStart={() => { setActive(1); trackClick(); }} goToModule={(i) => { setActive(i); trackClick(); }} />;
     if (active >= 1 && active <= NUM_LEARN) return (
-      <LearningModule idx={active} t={t} lang={lang} onCardRead={handleCardRead} onQuizSubmit={handleQuizSubmit} onTrackClick={trackClick} speak={speak} speaking={speaking} stopSpeak={stopSpeak} />
+      <LearningModule idx={active} t={t} lang={lang} onCardRead={handleCardRead} onQuizSubmit={handleQuizSubmit} onTrackClick={trackClick} speak={speak} speaking={speaking} paused={paused} pauseResumeSpeak={pauseResumeSpeak} stopSpeak={stopSpeak} speakingSource={speakingSource} />
     );
     if (active === IDX_LAB) return <ModuleLab t={t} lang={lang} />;
     if (active === IDX_RES) return <ModuleResources t={t} lang={lang} />;
     if (active === IDX_ANA) return (
       <ModuleAnalytics t={t} lang={lang} analytics={analytics} studentInfo={studentInfo} updateStudentInfo={updateStudentInfo}
         sanitizeId={sanitizeId} sanitizeName={sanitizeName} infoComplete={infoComplete} exportCSV={exportCSV}
-        clearHistory={clearHistory} setActive={setActive} speak={speak} stopSpeak={stopSpeak} speaking={speaking} moduleNavLabel={moduleNavLabel} />
+        clearHistory={clearHistory} setActive={setActive} speak={speak} stopSpeak={stopSpeak} speaking={speaking} paused={paused}
+        pauseResumeSpeak={pauseResumeSpeak} speakingSource={speakingSource} onTrackClick={trackClick} moduleNavLabel={moduleNavLabel} />
     );
     return null;
   };
@@ -1038,11 +1087,9 @@ function App() {
             </button>
           </div>
           <div className="flex items-center gap-2">
-            <button onClick={() => { toggleHeaderSpeak(); trackClick(); }} title={t.audio_read}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800">
-              {speaking ? <IconPause className="w-4 h-4" /> : <IconPlay className="w-4 h-4" />}
-              <span className="hidden sm:inline">{t.audio_read}</span>
-            </button>
+            <TTSControls t={t} lang={lang} text={headerSpeechText()} speak={(txt, lng) => speak(txt, lng, 'header')} speaking={speaking} paused={paused}
+              pauseResumeSpeak={pauseResumeSpeak} stopSpeak={stopSpeak} isActive={speakingSource === 'header'}
+              onTrackClick={trackClick} label={t.audio_read} size="md" />
             <button onClick={() => setLang(l => l === 'zh' ? 'en' : 'zh')}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800">
               <IconGlobe className="w-4 h-4" /> {lang === 'zh' ? 'EN' : '中文'}
@@ -1082,19 +1129,18 @@ function App() {
 }
 
 
-const FivePDiagram = ({ t, lang }) => {
+const FivePDiagram = ({ t, lang, goToModule }) => {
   const nodes = t.m0_modules.map((m, i) => ({ ...m, key: i }));
-  const positions = [
-    { x: 300, y: 80 },
-    { x: 459.8, y: 196.1 },
-    { x: 398.7, y: 383.9 },
-    { x: 201.3, y: 383.9 },
-    { x: 140.2, y: 196.1 }
-  ];
+  const cx = 340, cy = 320, orbit = 215, nodeR = 62;
+  const positions = [0,1,2,3,4].map(i => {
+    const angle = -Math.PI/2 + i * (2*Math.PI/5);
+    return { x: cx + orbit*Math.cos(angle), y: cy + orbit*Math.sin(angle) };
+  });
   const colors = ['#004030', '#3a6a52', '#6f8f6a', '#a8a472', '#D8C3A5'];
   return (
     <div onContextMenu={e => e.preventDefault()} className="ui-decoration mb-10 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 md:p-6 overflow-x-auto">
-      <svg draggable="false" viewBox="0 0 640 560" className="w-full max-w-2xl mx-auto" role="img" aria-label={t.m0_diagram_alt}>
+      <p className="text-xs text-slate-400 mb-2 text-center">{t.m0_diagram_hint}</p>
+      <svg draggable="false" viewBox="0 0 680 640" className="w-full max-w-2xl mx-auto" role="img" aria-label={t.m0_diagram_alt}>
         <defs>
           <radialGradient id="hubGrad" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor="#0a5c45" />
@@ -1102,46 +1148,50 @@ const FivePDiagram = ({ t, lang }) => {
           </radialGradient>
         </defs>
         {positions.map((p, i) => (
-          <line key={'l'+i} x1="320" y1="270" x2={p.x + 20} y2={p.y + 20} stroke="currentColor" className="text-slate-300 dark:text-slate-600" strokeWidth="1.5" strokeDasharray="4 3" />
+          <line key={'l'+i} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="currentColor" className="text-slate-300 dark:text-slate-600" strokeWidth="1.5" strokeDasharray="4 3" />
         ))}
-        <circle cx="320" cy="270" r="58" fill="url(#hubGrad)" />
-        <text x="320" y="264" textAnchor="middle" fill="#D8C3A5" fontSize="12" fontWeight="700" fontFamily="Merriweather, serif">{lang === 'zh' ? '五對' : '5 Pairs'}</text>
-        <text x="320" y="281" textAnchor="middle" fill="#ffffff" fontSize="11" fontWeight="700" fontFamily="Merriweather, serif">{lang === 'zh' ? 'P 原則' : 'of P'}</text>
+        <circle cx={cx} cy={cy} r="62" fill="url(#hubGrad)" />
+        <text x={cx} y={cy - 6} textAnchor="middle" fill="#D8C3A5" fontSize="13" fontWeight="700" fontFamily="Merriweather, serif">{lang === 'zh' ? '五對' : '5 Pairs'}</text>
+        <text x={cx} y={cy + 13} textAnchor="middle" fill="#ffffff" fontSize="12" fontWeight="700" fontFamily="Merriweather, serif">{lang === 'zh' ? 'P 原則' : 'of P'}</text>
         {positions.map((p, i) => {
-          const nx = p.x + 20, ny = p.y + 20;
           const words = nodes[i].title.split(' ');
           const line1 = words[0] || nodes[i].title;
           const line2 = words.slice(1).join(' ');
           return (
-            <g key={'n'+i}>
-              <circle cx={nx} cy={ny} r="40" fill={colors[i]} opacity="0.92" />
-              <circle cx={nx} cy={ny} r="40" fill="none" stroke="#ffffff" strokeOpacity="0.25" strokeWidth="1" />
-              <text x={nx} y={ny - 28} textAnchor="middle" fill={colors[i]} fontSize="13" fontWeight="800" fontFamily="Merriweather, serif" className="drop-shadow-sm">{nodes[i].num}</text>
-              <text x={nx} y={ny - 4} textAnchor="middle" fill="#ffffff" fontSize="10" fontWeight="700" fontFamily="Merriweather, serif">
-                {line1.length > 10 ? line1.slice(0, 10) : line1}
+            <g key={'n'+i} onClick={() => goToModule && goToModule(i+1)} style={{ cursor: goToModule ? 'pointer' : 'default' }}
+              role={goToModule ? 'button' : undefined} aria-label={goToModule ? nodes[i].title : undefined}>
+              <circle cx={p.x} cy={p.y} r={nodeR} fill={colors[i]} opacity="0.94" className="transition-opacity hover:opacity-100" />
+              <circle cx={p.x} cy={p.y} r={nodeR} fill="none" stroke="#ffffff" strokeOpacity="0.3" strokeWidth="1.5" />
+              <text x={p.x} y={p.y - 30} textAnchor="middle" fill="#ffffff" fontSize="14" fontWeight="800" fontFamily="Merriweather, serif" opacity="0.85">{nodes[i].num}</text>
+              <text x={p.x} y={p.y - 6} textAnchor="middle" fill="#ffffff" fontSize="12" fontWeight="700" fontFamily="Merriweather, serif">
+                {line1.length > 12 ? line1.slice(0, 12) : line1}
               </text>
               {line2 && (
-                <text x={nx} y={ny + 11} textAnchor="middle" fill="#ffffff" fontSize="9" fontWeight="600" className="opacity-90">
-                  {line2.length > 12 ? line2.slice(0, 12) : line2}
+                <text x={p.x} y={p.y + 11} textAnchor="middle" fill="#ffffff" fontSize="11" fontWeight="700" fontFamily="Merriweather, serif">
+                  {line2.length > 14 ? line2.slice(0, 14) : line2}
                 </text>
               )}
+              <text x={p.x} y={p.y + 30} textAnchor="middle" fill="#ffffff" fontSize="9" fontWeight="600" opacity="0.8">
+                {lang === 'zh' ? '點擊前往 →' : 'Tap to open →'}
+              </text>
             </g>
           );
         })}
       </svg>
       <div className="grid grid-cols-2 md:grid-cols-5 gap-2 mt-4">
         {nodes.map((n, i) => (
-          <div key={i} className="flex items-center gap-2 text-xs">
+          <button key={i} onClick={() => goToModule && goToModule(i+1)}
+            className="flex items-center gap-2 text-xs text-left rounded-lg p-1.5 -m-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
             <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: colors[i] }}></span>
             <span className="text-slate-600 dark:text-slate-300 leading-snug">{n.title}</span>
-          </div>
+          </button>
         ))}
       </div>
     </div>
   );
 };
 
-const ModuleZero = ({ t, lang, onStart }) => (
+const ModuleZero = ({ t, lang, onStart, goToModule }) => (
   <div>
     <div onContextMenu={e => e.preventDefault()} className="rounded-2xl bg-gradient-to-br from-[#004030] to-[#0a5c45] dark:from-[#1a1a1a] dark:to-[#2a2a2a] text-white p-8 md:p-12 mb-10">
       <p className="text-sm uppercase tracking-widest text-[#D8C3A5] mb-2">{t.subtitle}</p>
@@ -1149,7 +1199,7 @@ const ModuleZero = ({ t, lang, onStart }) => (
     </div>
     <p className="text-base leading-loose text-slate-600 dark:text-slate-300 mb-8 whitespace-pre-line">{t.m0_intro}</p>
 
-    <FivePDiagram t={t} lang={lang} />
+    <FivePDiagram t={t} lang={lang} goToModule={goToModule} />
 
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
       {t.m0_stats.map((s, i) => (
@@ -1179,23 +1229,36 @@ const ModuleZero = ({ t, lang, onStart }) => (
   </div>
 );
 
-const LearningModule = ({ idx, t, lang, onCardRead, onQuizSubmit, onTrackClick, speak, speaking, stopSpeak }) => {
+const LearningModule = ({ idx, t, lang, onCardRead, onQuizSubmit, onTrackClick, speak, speaking, paused, pauseResumeSpeak, stopSpeak, speakingSource }) => {
   const p = `m${idx}_`;
   const paragraphs = [1,2,3,4].map(n => t[p+'p'+n]).filter(Boolean);
-  const fullText = [t[p+'overview'], ...paragraphs, t[p+'wrapup']].join(' ');
+  const overviewText = t[p+'overview'];
+  const deepDiveText = paragraphs.join(' ');
+  const wrapupText = t[p+'wrapup'];
+  const fullText = [t[p+'title'], overviewText, deepDiveText, wrapupText].join(' ');
+
+  const sectionTTS = (key, text, label, size) => {
+    const sourceKey = 'm' + idx + '_' + key;
+    const speakSection = (txt, lng) => speak(txt, lng, sourceKey);
+    return (
+      <TTSControls t={t} lang={lang} text={text} speak={speakSection} speaking={speaking} paused={paused}
+        pauseResumeSpeak={pauseResumeSpeak} stopSpeak={stopSpeak} isActive={speakingSource === sourceKey}
+        onTrackClick={onTrackClick} label={label} size={size || 'sm'} />
+    );
+  };
 
   return (
     <div>
       <H2>{t[p+'title']}</H2>
       <div className="flex items-center gap-2 mb-4">
-        <button onClick={() => speaking ? stopSpeak() : speak(fullText, lang)}
-          className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
-          {speaking ? <IconPause className="w-3.5 h-3.5" /> : <IconPlay className="w-3.5 h-3.5" />} {t.audio_read}
-        </button>
+        {sectionTTS('full', fullText, t.audio_read, 'md')}
       </div>
 
-      <p className="text-xs uppercase tracking-wider text-slate-400 mb-1">{t.overview_label}</p>
-      <p className="text-base leading-loose text-slate-600 dark:text-slate-300 mb-6">{t[p+'overview']}</p>
+      <div className="flex items-center justify-between gap-2 mb-1">
+        <p className="text-xs uppercase tracking-wider text-slate-400">{t.overview_label}</p>
+        {sectionTTS('overview', overviewText, t.audio_read)}
+      </div>
+      <p className="text-base leading-loose text-slate-600 dark:text-slate-300 mb-6">{overviewText}</p>
 
       <p className="text-xs uppercase tracking-wider text-slate-400 mb-2">{t.highlights_label}</p>
       <div className="flex flex-wrap gap-2 mb-8">
@@ -1204,7 +1267,10 @@ const LearningModule = ({ idx, t, lang, onCardRead, onQuizSubmit, onTrackClick, 
         ))}
       </div>
 
-      <p className="text-xs uppercase tracking-wider text-slate-400 mb-2">{t.deep_dive_label}</p>
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <p className="text-xs uppercase tracking-wider text-slate-400">{t.deep_dive_label}</p>
+        {sectionTTS('deepdive', deepDiveText, t.audio_read)}
+      </div>
       <div className="space-y-4 mb-8">
         {paragraphs.map((para, i) => (
           <p key={i} className="text-base leading-loose text-slate-600 dark:text-slate-300">{para}</p>
@@ -1212,8 +1278,11 @@ const LearningModule = ({ idx, t, lang, onCardRead, onQuizSubmit, onTrackClick, 
       </div>
 
       <div className="bg-[#D8C3A5]/20 dark:bg-slate-800 border-l-4 border-[#004030] dark:border-[#D8C3A5] rounded-r-xl p-5 mb-4">
-        <p className="text-xs uppercase tracking-wider text-[#004030] dark:text-[#D8C3A5] font-bold mb-2">{t.wrapup_label}</p>
-        <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">{t[p+'wrapup']}</p>
+        <div className="flex items-center justify-between gap-2 mb-2">
+          <p className="text-xs uppercase tracking-wider text-[#004030] dark:text-[#D8C3A5] font-bold">{t.wrapup_label}</p>
+          {sectionTTS('wrapup', wrapupText, t.audio_read)}
+        </div>
+        <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">{wrapupText}</p>
       </div>
 
       <FlipCardDeck terms={t[p+'terms']} t={t} moduleId={idx} onCardRead={onCardRead} onTrackClick={onTrackClick} />
@@ -1257,35 +1326,112 @@ const ModuleResources = ({ t, lang }) => (
   </div>
 );
 
-const ModuleAnalytics = ({ t, lang, analytics, studentInfo, updateStudentInfo, sanitizeId, sanitizeName, infoComplete, exportCSV, clearHistory, setActive, speak, stopSpeak, speaking, moduleNavLabel }) => {
+const ModuleAnalytics = ({ t, lang, analytics, studentInfo, updateStudentInfo, sanitizeId, sanitizeName, infoComplete, exportCSV, clearHistory, setActive, speak, stopSpeak, speaking, paused, pauseResumeSpeak, speakingSource, onTrackClick, moduleNavLabel }) => {
   let totalTime = 0, totalClicks = 0, quizCorrectSum = 0, quizTotalSum = 0, cardsReadSum = 0, cardsTotalSum = 0;
   const weakModules = [];
+  let anyQuizAttempted = false;
   for (let i = 0; i <= TOTAL - 1; i++) {
     const a = analytics['m'+i] || {};
     totalTime += a.time || 0;
     totalClicks += a.clicks || 0;
-    if (a.quizTotal) {
+    if (i >= 1 && i <= NUM_LEARN && a.quizTotal) {
+      anyQuizAttempted = true;
       quizCorrectSum += a.quizCorrect || 0;
       quizTotalSum += a.quizTotal;
       const acc = Math.round((a.quizCorrect / a.quizTotal) * 100);
       if (acc < 75) weakModules.push({ idx: i, name: a.moduleName || moduleNavLabel(i), acc, wrong: a.quizWrong || [] });
     }
-    if (a.cardsTotal) { cardsReadSum += a.cardsRead || 0; cardsTotalSum += a.cardsTotal; }
+    if (i >= 1 && i <= NUM_LEARN && a.cardsTotal) { cardsReadSum += a.cardsRead || 0; cardsTotalSum += a.cardsTotal; }
   }
   const overallAcc = quizTotalSum ? Math.round((quizCorrectSum / quizTotalSum) * 100) : null;
   const cardUsage = cardsTotalSum ? Math.round((cardsReadSum / cardsTotalSum) * 100) : null;
 
-  const speakWeak = () => {
+  const weakAnalysisText = () => {
     let text = t.analytics_wp_tts_intro + ' ';
-    if (weakModules.length === 0) text += t.analytics_wp_tts_allpass;
+    if (!anyQuizAttempted) text += t.analytics_no_data;
+    else if (weakModules.length === 0) text += t.analytics_wp_tts_allpass;
     else weakModules.forEach(w => { text += t.analytics_wp_tts_module.replace('{name}', w.name).replace('{acc}', w.acc) + ' '; });
-    speak(text, lang);
+    return text;
   };
+  const speakWeak = (txt, lng) => speak(txt, lng, 'm8_weak');
 
   return (
     <div>
       <H2>{t.analytics_title}</H2>
       <p className="text-base leading-loose text-slate-600 dark:text-slate-300 mb-8">{t.analytics_desc}</p>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 text-center">
+          <p className="text-xs text-slate-400 mb-1">{t.analytics_total_time}</p>
+          <p className="text-xl font-serif font-black text-[#004030] dark:text-[#D8C3A5]">{totalTime} {t.analytics_sec}</p>
+        </div>
+        <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 text-center">
+          <p className="text-xs text-slate-400 mb-1">{t.analytics_total_clicks}</p>
+          <p className="text-xl font-serif font-black text-[#004030] dark:text-[#D8C3A5]">{totalClicks} {t.analytics_times}</p>
+        </div>
+        <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 text-center">
+          <p className="text-xs text-slate-400 mb-1">{t.analytics_overall_acc}</p>
+          <p className="text-xl font-serif font-black text-[#004030] dark:text-[#D8C3A5]">{overallAcc !== null ? overallAcc + '%' : t.analytics_no_data}</p>
+        </div>
+      </div>
+
+      <div className="overflow-x-auto mb-8">
+        <table className="w-full text-sm border-collapse">
+          <thead>
+            <tr className="text-left text-xs uppercase tracking-wider text-slate-400 border-b border-slate-200 dark:border-slate-700">
+              <th className="py-2 pr-4">{t.analytics_module}</th>
+              <th className="py-2 pr-4">{t.analytics_time}</th>
+              <th className="py-2 pr-4">{t.analytics_clicks}</th>
+              <th className="py-2 pr-4">{t.analytics_cards_read_total}</th>
+              <th className="py-2 pr-4">{t.analytics_correct_ans_total}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[...Array(TOTAL).keys()].map(i => {
+              const a = analytics['m'+i] || {};
+              return (
+                <tr key={i} className="border-b border-slate-100 dark:border-slate-800">
+                  <td className="py-2 pr-4 font-medium">{moduleNavLabel(i)}</td>
+                  <td className="py-2 pr-4">{a.time || 0} {t.analytics_sec}</td>
+                  <td className="py-2 pr-4">{a.clicks || 0}</td>
+                  <td className="py-2 pr-4">{(i >= 1 && i <= NUM_LEARN && a.cardsTotal) ? `${a.cardsRead||0} / ${a.cardsTotal}` : '—'}</td>
+                  <td className="py-2 pr-4">{(i >= 1 && i <= NUM_LEARN && a.quizTotal) ? `${a.quizCorrect||0} / ${a.quizTotal}` : ((i >= 1 && i <= NUM_LEARN) ? t.analytics_no_data : '—')}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
+        <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <p className="font-bold font-serif text-[#004030] dark:text-[#D8C3A5]">{t.analytics_wp_title}</p>
+          <TTSControls t={t} lang={lang} text={weakAnalysisText()} speak={speakWeak} speaking={speaking} paused={paused}
+            pauseResumeSpeak={pauseResumeSpeak} stopSpeak={stopSpeak} isActive={speakingSource === 'm8_weak'}
+            onTrackClick={onTrackClick} label={t.audio_read} />
+        </div>
+        {!anyQuizAttempted ? (
+          <p className="text-sm text-slate-400">{t.analytics_no_data}</p>
+        ) : weakModules.length === 0 ? (
+          <p className="text-sm text-green-600 dark:text-green-400">{t.analytics_wp_allpass}</p>
+        ) : (
+          <div className="space-y-4">
+            {weakModules.map(w => (
+              <div key={w.idx} className="border-l-4 border-amber-400 pl-4">
+                <p className="font-bold text-sm">{w.name} — {w.acc}%</p>
+                {w.wrong.length > 0 && (
+                  <p className="text-xs text-slate-500 mt-1">{t.analytics_wp_incorrect} {w.wrong.join(' / ')}</p>
+                )}
+                <button onClick={() => setActive(w.idx)} className="text-xs font-bold text-[#004030] dark:text-[#D8C3A5] underline mt-1">{t.analytics_wp_goto}</button>
+              </div>
+            ))}
+          </div>
+        )}
+        <div className="flex items-center justify-between mt-6 pt-4 border-t border-slate-100 dark:border-slate-700">
+          <p className="text-xs text-slate-400">{t.analytics_wp_saved}</p>
+          <button onClick={clearHistory} className="text-xs font-bold text-red-500 hover:underline">{t.analytics_wp_clear}</button>
+        </div>
+      </div>
 
       <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 mb-8">
         <p className="font-bold font-serif text-[#004030] dark:text-[#D8C3A5] mb-4">{t.analytics_form_title}</p>
@@ -1323,78 +1469,6 @@ const ModuleAnalytics = ({ t, lang, analytics, studentInfo, updateStudentInfo, s
           <button onClick={exportCSV} disabled={!infoComplete}
             className="px-4 py-2 text-sm bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] font-bold rounded-lg disabled:opacity-40">{t.analytics_export_csv}</button>
           {!infoComplete && <p className="text-xs text-slate-400">{t.analytics_fill_required}</p>}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 text-center">
-          <p className="text-xs text-slate-400 mb-1">{t.analytics_total_time}</p>
-          <p className="text-xl font-serif font-black text-[#004030] dark:text-[#D8C3A5]">{totalTime} {t.analytics_sec}</p>
-        </div>
-        <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 text-center">
-          <p className="text-xs text-slate-400 mb-1">{t.analytics_total_clicks}</p>
-          <p className="text-xl font-serif font-black text-[#004030] dark:text-[#D8C3A5]">{totalClicks} {t.analytics_times}</p>
-        </div>
-        <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 text-center">
-          <p className="text-xs text-slate-400 mb-1">{t.analytics_overall_acc}</p>
-          <p className="text-xl font-serif font-black text-[#004030] dark:text-[#D8C3A5]">{overallAcc !== null ? overallAcc + '%' : t.analytics_no_data}</p>
-        </div>
-      </div>
-
-      <div className="overflow-x-auto mb-8">
-        <table className="w-full text-sm border-collapse">
-          <thead>
-            <tr className="text-left text-xs uppercase tracking-wider text-slate-400 border-b border-slate-200 dark:border-slate-700">
-              <th className="py-2 pr-4">{t.analytics_module}</th>
-              <th className="py-2 pr-4">{t.analytics_time}</th>
-              <th className="py-2 pr-4">{t.analytics_clicks}</th>
-              <th className="py-2 pr-4">{t.analytics_cards_read_total}</th>
-              <th className="py-2 pr-4">{t.analytics_correct_ans_total}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {[...Array(TOTAL).keys()].map(i => {
-              const a = analytics['m'+i] || {};
-              return (
-                <tr key={i} className="border-b border-slate-100 dark:border-slate-800">
-                  <td className="py-2 pr-4 font-medium">{moduleNavLabel(i)}</td>
-                  <td className="py-2 pr-4">{a.time || 0} {t.analytics_sec}</td>
-                  <td className="py-2 pr-4">{a.clicks || 0}</td>
-                  <td className="py-2 pr-4">{a.cardsTotal ? `${a.cardsRead||0} / ${a.cardsTotal}` : '—'}</td>
-                  <td className="py-2 pr-4">{a.quizTotal ? `${a.quizCorrect||0} / ${a.quizTotal}` : t.analytics_no_data}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
-        <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-          <p className="font-bold font-serif text-[#004030] dark:text-[#D8C3A5]">{t.analytics_wp_title}</p>
-          <button onClick={() => speaking ? stopSpeak() : speakWeak()}
-            className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
-            {speaking ? <IconPause className="w-3.5 h-3.5" /> : <IconPlay className="w-3.5 h-3.5" />} {t.audio_read}
-          </button>
-        </div>
-        {weakModules.length === 0 ? (
-          <p className="text-sm text-green-600 dark:text-green-400">{t.analytics_wp_allpass}</p>
-        ) : (
-          <div className="space-y-4">
-            {weakModules.map(w => (
-              <div key={w.idx} className="border-l-4 border-amber-400 pl-4">
-                <p className="font-bold text-sm">{w.name} — {w.acc}%</p>
-                {w.wrong.length > 0 && (
-                  <p className="text-xs text-slate-500 mt-1">{t.analytics_wp_incorrect} {w.wrong.join(' / ')}</p>
-                )}
-                <button onClick={() => setActive(w.idx)} className="text-xs font-bold text-[#004030] dark:text-[#D8C3A5] underline mt-1">{t.analytics_wp_goto}</button>
-              </div>
-            ))}
-          </div>
-        )}
-        <div className="flex items-center justify-between mt-6 pt-4 border-t border-slate-100 dark:border-slate-700">
-          <p className="text-xs text-slate-400">{t.analytics_wp_saved}</p>
-          <button onClick={clearHistory} className="text-xs font-bold text-red-500 hover:underline">{t.analytics_wp_clear}</button>
         </div>
       </div>
     </div>
