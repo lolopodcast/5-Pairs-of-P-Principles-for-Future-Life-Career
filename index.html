@@ -1,114 +1,1318 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5 Pairs of P-Principles</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f8fafc;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .svg-container {
-            width: 100%;
-            max-width: 900px;
-            background: white;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            border-radius: 16px;
-            padding: 20px;
-            overflow: hidden;
-        }
-        svg {
-            width: 100%;
-            height: auto;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5 Pairs of P-Principles | Prof. Shihmin Lo</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  body { font-family: 'Inter', sans-serif; }
+  ::selection { background:#004030; color:#fff; }
+  .dark ::selection { background:#D8C3A5; color:#004030; }
+  @keyframes fadeInUp { from{opacity:0;transform:translateY(15px)} to{opacity:1;transform:translateY(0)} }
+  .animate-fade-in { animation: fadeInUp 0.5s ease-out forwards; }
+  .perspective { perspective: 1000px; }
+  .transform-style-3d { transform-style: preserve-3d; }
+  .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .rotate-y-180 { transform: rotateY(180deg); }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+  .dark ::-webkit-scrollbar-thumb { background: #475569; }
+  header, footer, button, [role="button"], .ui-decoration { -webkit-user-select: none; user-select: none; }
+  input, textarea, select { -webkit-user-select: text; user-select: text; }
+</style>
+<script>
+  tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter','sans-serif'], serif: ['Merriweather','serif'] } } } };
+</script>
 </head>
-<body>
+<body class="bg-[#f4f4f4] dark:bg-[#121212]">
+<div id="root"></div>
+<script>
+(function(){
+  const ALLOWED = ['lolopodcast.github.io','localhost','127.0.0.1'];
+  const REDIRECT = 'https://www.ibs.ncnu.edu.tw/index.php/faculty/tenured-professor/299-smlo';
+  const isLocalFile = location.protocol === 'file:';
+  if (!isLocalFile && !ALLOWED.some(d => location.hostname === d || location.hostname.endsWith('.'+d))) {
+    document.body.innerHTML = '<div style="text-align:center;padding:60px;font-family:sans-serif"><h1>Access Denied</h1><p>This resource is not authorised on this domain.</p></div>';
+    setTimeout(() => location.href = REDIRECT, 3000);
+    return;
+  }
+  if (window.self !== window.top) {
+    try { window.top.location.href = window.self.location.href; }
+    catch(e) { document.body.innerHTML = '<div style="text-align:center;padding:60px"><h1>Frame Blocked</h1><p>This content cannot be embedded.</p></div>'; }
+  }
+})();
+</script>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
 
-<div class="svg-container">
-    <svg viewBox="0 0 800 750" xmlns="http://www.w3.org/2000/svg">
-        <!-- Definitions for shadows -->
-        <defs>
-            <filter id="drop-shadow" x="-20%" y="-20%" width="140%" height="140%">
-                <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.1"/>
-            </filter>
-        </defs>
+const _SALT = '5P2026';
+const _e = (s, n) => { const p = s + ':' + n; let r = ''; for (let i=0;i<p.length;i++) r += String.fromCharCode(p.charCodeAt(i) ^ ((i+7)*3 & 0xFF)); return btoa(r); };
+const _d = (token) => { const decoded = atob(token); let r=''; for (let i=0;i<decoded.length;i++) r += String.fromCharCode(decoded.charCodeAt(i) ^ ((i+7)*3 & 0xFF)); return parseInt(r.split(':')[1],10); };
+const _A0=_e(_SALT,0), _A1=_e(_SALT,1), _A2=_e(_SALT,2), _A3=_e(_SALT,3);
 
-        <!-- Background grid (optional, for aesthetics) -->
-        <rect width="800" height="750" fill="#ffffff" rx="16" />
+const NUM_LEARN = 5;
+const TOTAL = 1 + NUM_LEARN + 3;
+const IDX_LAB = NUM_LEARN + 1;
+const IDX_RES = NUM_LEARN + 2;
+const IDX_ANA = NUM_LEARN + 3;
 
-        <!-- Titles -->
-        <text x="400" y="80" text-anchor="middle" font-size="28" font-weight="bold" fill="#1e3a8a">
-            5 Pairs of P-Principles for future life &amp; work career
-        </text>
-        <text x="720" y="130" text-anchor="end" font-size="22" font-style="italic" fill="#475569">
-            by Prof. Shihmin Lo, NCNU
-        </text>
+const Icon = ({ d, size=20, fill="none", children }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{children || <path d={d}/>}</svg>
+);
+const IconBookOpen = (p) => <Icon {...p}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></Icon>;
+const IconAlertTriangle = (p) => <Icon {...p}><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></Icon>;
+const IconCheckCircle = (p) => <Icon {...p}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></Icon>;
+const IconGlobe = (p) => <Icon {...p}><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></Icon>;
+const IconChevronRight = (p) => <Icon {...p}><polyline points="9 18 15 12 9 6"/></Icon>;
+const IconChevronUp = (p) => <Icon {...p}><polyline points="18 15 12 9 6 15"/></Icon>;
+const IconMenu = (p) => <Icon {...p}><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></Icon>;
+const IconX = (p) => <Icon {...p}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></Icon>;
+const IconMoon = (p) => <Icon {...p}><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></Icon>;
+const IconSun = (p) => <Icon {...p}><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></Icon>;
+const IconPlay = (p) => <Icon {...p} fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></Icon>;
+const IconPause = (p) => <Icon {...p} fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></Icon>;
+const IconSquare = (p) => <Icon {...p} fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/></Icon>;
+const IconArrowRight = (p) => <Icon {...p}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></Icon>;
+const IconActivity = (p) => <Icon {...p}><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></Icon>;
+const IconCpu = (p) => <Icon {...p}><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></Icon>;
+const IconTrendingUp = (p) => <Icon {...p}><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></Icon>;
+const IconLayers = (p) => <Icon {...p}><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></Icon>;
+const IconFlag = (p) => <Icon {...p}><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></Icon>;
+const IconZap = (p) => <Icon {...p} fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></Icon>;
+const IconFlask = (p) => <Icon {...p}><path d="M9 2v6L4.5 19a1 1 0 0 0 1 1.5h13a1 1 0 0 0 1-1.5L15 8V2"/><line x1="8.5" y1="2" x2="15.5" y2="2"/><line x1="6.5" y1="13" x2="17.5" y2="13"/></Icon>;
+const IconZapLab = (p) => <Icon {...p} fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></Icon>;
+const IconHome = (p) => <Icon {...p}><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></Icon>;
+const IconHeart = (p) => <Icon {...p}><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></Icon>;
+const IconTarget = (p) => <Icon {...p}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></Icon>;
+const IconDollar = (p) => <Icon {...p}><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></Icon>;
+const IconUsers = (p) => <Icon {...p}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></Icon>;
+const IconClock = (p) => <Icon {...p}><circle c
+const dict = {
+  zh: {
+    brand: "5PAIRS", title: "人生與職涯的五個 P 原則",
+    subtitle: "給畢業生的溫馨指引 — 駱世民教授",
+    nav_modules: "單元目錄", nav_prev: "← 上一單元", nav_next: "下一單元 →", nav_home: "首頁",
+    key_terms: "關鍵專有名詞", flip_prompt: "點擊翻轉",
+    flip_status: "已讀 {read} / 已顯示 {shown} / 總計 {total}",
+    flip_next: "下一組", flip_retry: "重新開始",
+    audio_read: "語音導覽",
+    quiz_title: "模組知識檢定",
+    quiz_status: "答對 {correct} / 已答 {answered} / 總計 {total}",
+    quiz_next: "下一組", quiz_retry: "重新測驗",
+    submit: "提交答案",
+    score: "得分", correct: "正確", incorrect: "錯誤", explanation: "解析",
+    overview_label: "Overview 概述", highlights_label: "Highlights 重點",
+    deep_dive_label: "Deep Dive 深入解析", wrapup_label: "Wrap-up 總結",
 
-        <!-- Connecting Lines -->
-        <g stroke="#cbd5e1" stroke-width="3" fill="none">
-            <!-- Center to Outer -->
-            <line x1="400" y1="420" x2="400" y2="220" />
-            <line x1="400" y1="420" x2="620" y2="420" />
-            <line x1="400" y1="420" x2="400" y2="620" />
-            <line x1="400" y1="420" x2="180" y2="420" />
-            
-            <!-- Outer Diamond -->
-            <line x1="400" y1="220" x2="620" y2="420" />
-            <line x1="620" y1="420" x2="400" y2="620" />
-            <line x1="400" y1="620" x2="180" y2="420" />
-            <line x1="180" y1="420" x2="400" y2="220" />
-        </g>
+    analytics_title: "學習歷程分析", analytics_desc: "檢視您在本課程中的學習軌跡、測驗表現與待加強主題，所有資料僅儲存於您的瀏覽器本機。",
+    analytics_form_title: "基本資料",
+    analytics_group: "組別", analytics_group_select: "請選擇", analytics_dept: "系級",
+    analytics_dept_ph: "例：IBS3",
+    analytics_id: "學號", analytics_id_ph: "例：113212599",
+    analytics_name_en: "英文姓名", analytics_name_en_ph: "例：Shihmin Lo",
+    analytics_name_zh: "中文姓名", analytics_name_zh_ph: "例：王阿吉",
+    analytics_export_csv: "匯出 CSV 歷程記錄",
+    analytics_fill_required: "請填寫完整資訊以解鎖匯出",
+    analytics_refresh_prompt: "是否刷新紀錄儲存？",
+    group_options: ["G1","G2","G3","G4","G5","G6","G7","G8","G9","G10","G11","G12","Others"],
+    analytics_total_time: "總學習時間", analytics_total_clicks: "總互動點擊",
+    analytics_overall_acc: "總體測驗答對率",
+    analytics_card_usage: "學習卡使用率",
+    analytics_module: "模組", analytics_time: "停留時間",
+    analytics_clicks: "點擊次數", analytics_acc: "答對率",
+    analytics_correct_ans_total: "答對 / 已填答 / 總題數",
+    analytics_cards_read_total: "已讀 / 總卡數",
+    analytics_no_data: "尚未測驗", analytics_sec: "秒", analytics_times: "次",
+    analytics_progress_title: "整體學習進度",
+    analytics_progress_visited: "已瀏覽", analytics_progress_not_visited: "未瀏覽",
+    analytics_progress_quiz_done: "已測驗",
+    analytics_wp_title: "弱點分析與複習建議",
+    analytics_wp_incorrect: "答錯題目：",
+    analytics_wp_goto: "→ 前往複習此模組",
+    analytics_wp_allpass: "所有已測驗模組答對率均達 75% 以上，表現優異！",
+    analytics_wp_saved: "學習歷程已自動儲存於本機瀏覽器",
+    analytics_wp_clear: "🗑 清除歷程",
+    analytics_wp_clear_confirm: "確定要清除所有學習歷程資料嗎？此操作無法復原。",
+    analytics_wp_tts_intro: "以下是您的弱點分析。",
+    analytics_wp_tts_module: "模組：{name}，答對率 {acc}%，建議複習。",
+    analytics_wp_tts_allpass: "恭喜！所有已測驗模組答對率均達 75% 以上。",
 
-        <!-- Node: Top (Passion & Purpose) -->
-        <g transform="translate(400, 220)">
-            <circle cx="0" cy="0" r="85" fill="#e0f2fe" stroke="#0284c7" stroke-width="3" filter="url(#drop-shadow)"/>
-            <text x="0" y="-15" text-anchor="middle" font-size="20" font-weight="bold" fill="#0f172a">Passion</text>
-            <text x="0" y="10" text-anchor="middle" font-size="16" fill="#475569">&amp;</text>
-            <text x="0" y="35" text-anchor="middle" font-size="20" font-weight="bold" fill="#0f172a">Purpose</text>
-        </g>
+    m0_nav: "0. 執行概要",
+    m0_title: "人生與職涯的五個 P 原則",
+    m0_intro: "各位畢業生、親愛的家長、親友，還有各位師長們，大家好，恭喜你們！今天是個開心的日子，也是個人生的重要里程碑。在你們準備離開校園、迎向未來的時候，駱世民教授想分享一個簡單的架構——「人生與職涯的五個 P 原則」。這套架構並不是要給你一份標準答案，而是希望成為一面鏡子，讓你在往後的日子裡，無論是面對求職的徬徨、職場的挑戰，或是人生階段的轉換，都能停下來想一想：我現在的選擇，呼應了哪些原則？還缺了哪一塊？這五對原則環環相扣——熱情與意義讓工作有方向，專業與進步讓你站得住腳，回報與繁榮讓生活有保障，同儕與夥伴讓旅途不孤單，耐心與堅持則是撐過低潮的韌性。本課程將逐一帶你認識這五對原則的內涵、彼此的關聯，以及如何在日常生活中具體實踐。希望這份指引，能陪伴你走過從校園到社會的轉折，也能在未來遇到迷惘時，成為你重新定錨的依據。",
+    m0_why: "為什麼這套原則值得花時間理解？",
+    m0_why_desc: "畢業是人生的分水嶺，許多人在踏入職場初期容易只看眼前的薪資與職稱，卻忽略了長期的自我實現與生活平衡。這五對 P 原則提供一個整體性的檢視角度，幫助你在做生涯決策時，同時兼顧內在動機、專業成長、現實生活、人際支持與心理韌性，避免「顧此失彼」，讓你的職涯發展走得既長遠又踏實。",
+    m0_modules: [
+      { num: "01", title: "熱情與意義 Passion & Purpose", desc: "找到讓你願意起床的理由，看見工作背後的價值。" },
+      { num: "02", title: "專業與進步 Profession & Progress", desc: "透過終身學習培養知識、技能與態度，持續精進自己。" },
+      { num: "03", title: "回報與繁榮 Payoff & Prosperity", desc: "爭取合理報酬，同時照顧身心健康與生活平衡。" },
+      { num: "04", title: "同儕與夥伴 Peers & Partners", desc: "建立職場支持網絡，珍惜生命中的重要伴侶。" },
+      { num: "05", title: "耐心與堅持 Patience & Persistence", desc: "在挫折中保持韌性，一步一步邁向目標。" }
+    ],
+    m0_stats: [
+      { val: "5", label: "對核心原則" },
+      { val: "300+", label: "字深度解析／模組" },
+      { val: "20+", label: "互動學習卡與題目" },
+      { val: "1", label: "份送給畢業生的祝福" }
+    ],
+    m0_start: "開始學習 →",
 
-        <!-- Node: Right (Profession & Progress) -->
-        <g transform="translate(620, 420)">
-            <circle cx="0" cy="0" r="85" fill="#e0f2fe" stroke="#0284c7" stroke-width="3" filter="url(#drop-shadow)"/>
-            <text x="0" y="-15" text-anchor="middle" font-size="20" font-weight="bold" fill="#0f172a">Profession</text>
-            <text x="0" y="10" text-anchor="middle" font-size="16" fill="#475569">&amp;</text>
-            <text x="0" y="35" text-anchor="middle" font-size="20" font-weight="bold" fill="#0f172a">Progress</text>
-        </g>
+    m1_nav: "1. 熱情與意義", m1_title: "熱情與意義 Passion & Purpose",
+    m1_overview: "本單元探討「熱情」與「意義」如何成為職涯選擇的內在指南針。剛出社會時，許多人容易只想著趕快找一份能糊口的工作；但若能進一步問自己「什麼事讓我願意每天起床」，便能逐漸把工作從一份差事，轉化為一段有意義的旅程。",
+    m1_highlights: ["內在動機", "天賦與貢獻", "工作意義感", "職涯方向感"],
+    m1_p1: "剛出社會，大家很容易為了生活，只想趕快找份工作。但駱世民教授鼓勵畢業生稍微看遠一點，去尋找真正讓自己充滿熱忱的事物。這並不代表要立刻辭去現有工作去追逐夢想，而是提醒我們在每一次選擇的當下，多留一點空間去傾聽內心真正的聲音——什麼事情會讓你每天早上有動力起床？",
+    m1_p2: "「意義」在於看見工作背後的價值，還有你的天賦可以怎麼讓這個世界變得更好一點。當我們能把日常任務和更大的價值連結起來時，即使是看似平凡的工作，也能展現出不平凡的意義。",
+    m1_p3: "當日常工作能呼應你內心的熱情，上班就不再只是個例行公事，而是一趟很有成就感的旅程。這種「呼應」不一定一開始就完美契合，它常常是透過不斷嘗試、調整與累積經驗，逐漸磨合出來的結果。",
+    m1_p4: "值得提醒的是，熱情不是一種「找到了就永遠不變」的狀態，而比較像是一段持續對話——你與工作、與自己內在價值觀之間的對話。隨著年齡、角色與人生階段的轉變，熱情的形貌也可能跟著轉化，這都是非常自然的過程。",
+    m1_wrapup: "熱情與意義，是職涯旅程最初也最根本的羅盤。它提醒我們：選擇工作不只是選擇一份薪水，更是選擇一種讓自己每天願意投入、並能感受到貢獻價值的生活方式。帶著這份覺察出發，你的職涯之路會走得更踏實、更有方向感。",
+    m1_terms: [
+      { front: "Purpose 意義感", back: "個人對所從事工作之社會價值與貢獻的認知與認同，是支撐長期投入的核心動力。" },
+      { front: "Intrinsic Motivation 內在動機", back: "源自個人興趣、好奇心或價值觀，而非外在獎勵驅動的行為動力。" },
+      { front: "Calling 志業", back: "一種將工作視為自我實現與服務他人雙重使命的職業觀，超越單純謀生的層次。" },
+      { front: "Self-Actualization 自我實現", back: "馬斯洛需求層次理論中最高層級，指充分發揮個人潛能、追求成長與意義的心理狀態。" },
+      { front: "Job Crafting 工作形塑", back: "員工主動調整工作內容、互動關係或認知框架，使工作更貼近個人熱情與價值觀的歷程。" }
+    ],
+    m1_q: [
+      { q: "根據駱教授的分享，「意義」(Purpose) 主要是指什麼？", opts: ["薪資與升遷的速度","看見工作背後的價值，以及自己天賦如何讓世界更好","公司規模與知名度","每天的工作時數長短"], ans: _A1, exp: "意義在於看見工作的價值與貢獻，而非外在條件。" },
+      { q: "演講中建議畢業生在求職時，除了考量生活需求外，還應該多問自己什麼問題？", opts: ["哪份工作起薪最高","什麼事情會讓我每天早上有動力起床","哪個產業最熱門","誰的公司福利最好"], ans: _A1, exp: "這個問題能幫助釐清內在熱情與動機所在。" },
+      { q: "當日常工作能呼應內心熱情時，工作會被描述為什麼？", opts: ["一個沉重的負擔","一趟有成就感的旅程","一種無法避免的義務","純粹換取金錢的手段"], ans: _A1, exp: "呼應內心熱情會讓工作轉化為有意義的旅程而非例行公事。" },
+      { q: "下列何者最貼近 Job Crafting（工作形塑）的概念？", opts: ["完全服從主管安排，不做任何調整","主動微調工作內容或互動方式，讓工作更貼近自身熱情","只專注於提高工作效率與產出數字","將工作與生活完全切割不相往來"], ans: _A1, exp: "工作形塑強調員工主動調整工作樣貌，使其更符合個人價值。" },
+      { q: "關於「熱情」的本質，本單元提出哪一種觀點？", opts: ["熱情一旦找到便永遠固定不變","熱情是一段持續的對話，會隨人生階段轉化","熱情與工作內容毫無關聯","熱情只在年輕時才存在"], ans: _A1, exp: "熱情比較像持續的對話歷程，會隨人生階段自然轉變。" }
+    ],
 
-        <!-- Node: Bottom (Peers & Partners) -->
-        <g transform="translate(400, 620)">
-            <circle cx="0" cy="0" r="85" fill="#e0f2fe" stroke="#0284c7" stroke-width="3" filter="url(#drop-shadow)"/>
-            <text x="0" y="-15" text-anchor="middle" font-size="20" font-weight="bold" fill="#0f172a">Peers</text>
-            <text x="0" y="10" text-anchor="middle" font-size="16" fill="#475569">&amp;</text>
-            <text x="0" y="35" text-anchor="middle" font-size="20" font-weight="bold" fill="#0f172a">Partners</text>
-        </g>
+    m2_nav: "2. 專業與進步", m2_title: "專業與進步 Profession & Progress",
+    m2_overview: "本單元聚焦於「專業」的養成與「進步」的持續性。世界變化快速，學校所學只是起點；唯有透過終身學習培養知識、技能與態度三大專業素養，才能在快速變動的環境中站穩腳步、持續成長。",
+    m2_highlights: ["終身學習", "專業素養", "知識技能態度", "持續精進"],
+    m2_p1: "世界變得很快，大家在學校學到的其實只是個基礎。要真正站穩腳步，需要透過終身學習來培養專業「素養」(competencies)——這包含了知識(knowledge)、技能(skills)，還有最重要的，態度(attitude)。",
+    m2_p2: "保持好奇，多問問題。真正的進步不只是升職加薪，而是你每一天在這些專業素養上的成長。這種日常累積看似微小，但長期下來，會在關鍵時刻成為你最有力的後盾——無論是面對新的任務挑戰，或是把握突如其來的機會。",
+    m2_p3: "期許自己，明天的你總比今天的你再進步一點點。這句看似簡單的提醒，其實蘊含了一種「成長型思維」(growth mindset)：把能力視為可以透過努力與學習持續發展的特質，而非一成不變的天賦。",
+    m2_p4: "在實務上，專業與進步不只是個人課題，也與所處的團隊與組織文化息息相關。一個鼓勵提問、容許犯錯、樂於分享知識的環境，會讓終身學習變得自然而然；反之，若處在一個僵化保守的氛圍，便更需要靠自己主動尋找學習的機會與資源。",
+    m2_wrapup: "專業與進步，提醒我們把每一天都視為累積實力的機會。知識、技能與態度三者缺一不可，而保持好奇心與成長型思維，正是讓自己在快速變動的時代中持續站穩腳步、甚至脫穎而出的關鍵。",
+    m2_terms: [
+      { front: "Lifelong Learning 終身學習", back: "個人在生命全程中持續主動學習、更新知識與技能的歷程，以因應環境快速變遷。" },
+      { front: "Competency 專業素養", back: "由知識、技能與態度三者組成的綜合能力，是有效完成工作任務的基礎。" },
+      { front: "Growth Mindset 成長型思維", back: "相信能力可透過努力、策略與他人回饋持續發展，而非一成不變的信念取向。" },
+      { front: "Knowledge / Skill / Attitude 知識／技能／態度", back: "構成專業素養的三大支柱：知識為認知基礎、技能為操作能力、態度為價值取向與工作意願。" },
+      { front: "Continuous Improvement 持續改善", back: "透過反覆檢視、調整與優化，使個人或組織的表現逐步提升的管理理念。" }
+    ],
+    m2_q: [
+      { q: "根據本單元，專業素養 (competencies) 主要由哪三項要素組成？", opts: ["薪資、職稱、年資","知識、技能、態度","學歷、人脈、外貌","運氣、時機、背景"], ans: _A1, exp: "知識、技能、態度三者構成專業素養的核心。" },
+      { q: "演講中如何形容「真正的進步」？", opts: ["只看是否升職加薪","每天在專業素養上的持續成長","公司給予多少獎金","同儕的認可程度"], ans: _A1, exp: "真正的進步來自每日專業素養的累積成長。" },
+      { q: "「成長型思維」(Growth Mindset) 的核心信念是什麼？", opts: ["能力是天生固定、無法改變的","能力可以透過努力與學習持續發展","只有少數人才能變得優秀","學習只在學生時期才有意義"], ans: _A1, exp: "成長型思維相信能力能透過持續努力而提升。" },
+      { q: "下列何者最符合「終身學習」的精神？", opts: ["畢業後就不再需要學習新事物","保持好奇心，主動更新知識與技能以因應變化","只在公司要求時才參加培訓","認為經驗比學習新知更重要"], ans: _A1, exp: "終身學習強調持續主動學習以適應環境變遷。" },
+      { q: "本單元提到，組織文化會如何影響個人的專業成長？", opts: ["文化與個人成長完全無關","鼓勵提問與分享的環境讓終身學習更自然發生","只有大公司才有資源培養人才","組織文化只影響薪資不影響學習"], ans: _A1, exp: "支持性的組織文化能促進學習氛圍與個人成長。" }
+    ],
 
-        <!-- Node: Left (Payoff & Prosperity) -->
-        <g transform="translate(180, 420)">
-            <circle cx="0" cy="0" r="85" fill="#e0f2fe" stroke="#0284c7" stroke-width="3" filter="url(#drop-shadow)"/>
-            <text x="0" y="-15" text-anchor="middle" font-size="20" font-weight="bold" fill="#0f172a">Payoff</text>
-            <text x="0" y="10" text-anchor="middle" font-size="16" fill="#475569">&amp;</text>
-            <text x="0" y="35" text-anchor="middle" font-size="20" font-weight="bold" fill="#0f172a">Prosperity</text>
-        </g>
+    m3_nav: "3. 回報與繁榮", m3_title: "回報與繁榮 Payoff & Prosperity",
+    m3_overview: "本單元討論「合理報酬」與「全方位繁榮」的概念。熱情固然重要，但認識自己的價值、爭取相符的肯定與報酬同樣關鍵；同時，真正的繁榮不僅是財務穩定，更包含身心健康與生活平衡。",
+    m3_highlights: ["合理報酬", "自我價值", "財務穩定", "身心平衡"],
+    m3_p1: "有熱情很好，但知道自己的價值也一樣重要。你的努力與貢獻，絕對值得相符的肯定與實質報酬，不要害怕為自己發聲。許多剛出社會的新鮮人因為缺乏自信或經驗，容易在薪資談判時自我低估，這其實是一個值得提早練習的能力。",
+    m3_p2: "經濟獨立是長大後很現實的課題，但真正的繁榮不只有金錢，它還包含照顧好你的身心健康，過一個平衡的好生活。財務的穩定，能為我們在面對人生重大決定時，提供更多選擇的自由與底氣。",
+    m3_p3: "「繁榮」(Prosperity) 是一個多面向的概念：除了收入與儲蓄，還包括充足的休息、規律的運動、良好的人際互動，以及對生活有掌控感。當這些面向都被照顧到時，工作上的投入也會變得更有續航力，而不是用健康去換取短期的成果。",
+    m3_p4: "值得留意的是，「合理回報」並不等於「越多越好」，而是「與貢獻、市場行情及個人需求相稱」。學會評估自己的市場價值、了解產業薪資行情，並在適當時機理性溝通，是建立長期職涯安全感的重要一步。",
+    m3_wrapup: "回報與繁榮提醒我們：認可自己的價值、爭取合理待遇，與照顧好身心健康，是同等重要的課題。唯有在財務安全與生活平衡兼具的基礎上，我們才能更從容地追求熱情、持續成長，讓職涯走得長久而踏實。",
+    m3_terms: [
+      { front: "Fair Compensation 合理報酬", back: "薪資與福利水準應與個人之貢獻、能力及市場行情相稱，是職場公平性的重要指標。" },
+      { front: "Financial Security 財務安全感", back: "個人或家庭在收入、儲蓄與風險管理上具備足夠韌性，能從容面對生活中的不確定性。" },
+      { front: "Work-Life Balance 工作生活平衡", back: "個人在工作投入與生活、休息、人際關係之間取得相對協調與滿意的狀態。" },
+      { front: "Well-being 身心福祉", back: "涵蓋生理健康、心理健康與社會關係品質的整體性安適狀態。" },
+      { front: "Self-Advocacy 為自己發聲", back: "個人主動表達自身需求、價值與權益，爭取應得認可與待遇的能力與行動。" }
+    ],
+    m3_q: [
+      { q: "本單元建議畢業生面對報酬議題時，應抱持什麼態度？", opts: ["完全不要主動提及薪資","認識自己的價值，並適時為自己發聲","只要有工作做就好，待遇不重要","薪資多寡完全取決於運氣"], ans: _A1, exp: "認識自身價值並適時發聲，是建立合理報酬的第一步。" },
+      { q: "根據演講內容，「真正的繁榮」除了金錢之外還包含什麼？", opts: ["職位頭銜的高低","身心健康與生活平衡","社群媒體上的形象","工作時數的長短"], ans: _A1, exp: "繁榮是多面向的，涵蓋健康與生活平衡，不只限於金錢。" },
+      { q: "「合理回報」在本單元中被理解為下列何種概念？", opts: ["薪資永遠是越高越好，沒有上限","與個人貢獻、市場行情及需求相稱的報酬","完全由公司單方面決定，員工無從參與","只與年資長短直接掛勾"], ans: _A1, exp: "合理回報強調的是「相稱」，而非單純追求數字最大化。" },
+      { q: "財務安全感對於職涯選擇可能帶來什麼影響？", opts: ["讓人更容易感到焦慮不安","提供面對重大決定時更多選擇自由與底氣","與職涯選擇完全無關","只會讓人變得貪心"], ans: _A1, exp: "財務穩定能增加面對人生抉擇時的從容與選項。" },
+      { q: "下列何者最符合 Work-Life Balance（工作生活平衡）的精神？", opts: ["把所有時間都投入工作以求快速升遷","在工作投入與生活、休息、人際關係之間取得協調","完全不接受任何加班與額外任務","認為生活與工作應該毫無交集"], ans: _A1, exp: "工作生活平衡強調的是協調與相對滿意的狀態，而非極端切割。" }
+    ],
 
-        <!-- Node: Center (Patience & Persistence) -->
-        <g transform="translate(400, 420)">
-            <circle cx="0" cy="0" r="95" fill="#fef08a" stroke="#ca8a04" stroke-width="4" filter="url(#drop-shadow)"/>
-            <text x="0" y="-15" text-anchor="middle" font-size="22" font-weight="bold" fill="#713f12">Patience</text>
-            <text x="0" y="10" text-anchor="middle" font-size="18" fill="#a16207">&amp;</text>
-            <text x="0" y="35" text-anchor="middle" font-size="22" font-weight="bold" fill="#713f12">Persistence</text>
-        </g>
+    m4_nav: "4. 同儕與夥伴", m4_title: "同儕與夥伴 Peers & Partners",
+    m4_overview: "本單元探討職場中「同儕」支持網絡的建立，以及生命中「伴侶」關係的珍貴。良好的人際連結，無論在職場或私人生活中，都是支撐我們走過高低起伏的重要力量。",
+    m4_highlights: ["支持網絡", "職場夥伴", "親密關係", "人際資本"],
+    m4_p1: "在職場上，多結交互相支持的同儕——像是同事、前輩，或是在低潮時拉你一把的朋友。這些關係不一定要轟轟烈烈，有時候只是一句鼓勵的話、一次經驗的分享，就能在關鍵時刻帶來很大的力量。",
+    m4_p2: "不過更重要的是，駱教授特別強調生活中的「伴侶」(Partners)。好好珍惜那個跟你有著深厚情感與親密關係的人。能找到一個真正的人生伴侶，一起規劃未來、甚至共組家庭，是一件非常美好的事。",
+    m4_p3: "請用心經營這段關係，因為在遇到風雨時，他們會是你最穩固的靠山。無論是職場上的夥伴關係，或是私人生活中的伴侶關係，都需要持續的投入、傾聽與相互理解，才能在時間的累積下越來越深厚。",
+    m4_p4: "值得一提的是，建立連結是一個雙向的歷程：在期待他人支持自己的同時，我們也應該練習成為別人生命中那個願意伸出援手的人。這種互相成就的關係網絡，正是「同儕與夥伴」這項原則所要傳達的核心精神。",
+    m4_wrapup: "同儕與夥伴提醒我們：人不是孤島，無論是在職場上互相扶持的同事，或是生活中相依相伴的人生伴侶，這些關係都是我們前進路上最重要的支柱。用心經營，將為你的人生增添更多溫度與韌性。",
+    m4_terms: [
+      { front: "Social Capital 社會資本", back: "個人透過人際網絡所累積的信任、資源與互惠關係，能在需要時提供實質與情感上的支持。" },
+      { front: "Mentor 引路人／前輩", back: "在專業或人生道路上提供經驗分享、建議與引導，協助他人成長的資深夥伴。" },
+      { front: "Intimate Relationship 親密關係", back: "個人與伴侶之間建立在信任、情感連結與相互承諾基礎上的深度關係。" },
+      { front: "Reciprocity 互惠", back: "人際互動中彼此給予與回饋的動態歷程，是維繫長期關係的重要基礎。" },
+      { front: "Support Network 支持網絡", back: "由家人、朋友、同事等構成的人際系統，在生活與職涯各階段提供陪伴與協助。" }
+    ],
+    m4_q: [
+      { q: "演講中建議在職場上應該如何與同儕互動？", opts: ["盡量保持距離，避免過度往來","多結交互相支持的同事、前輩與朋友","只與職位比自己高的人來往","把所有同事都視為競爭對手"], ans: _A1, exp: "建立互相支持的同儕關係，能在職涯路上提供重要助力。" },
+      { q: "駱教授特別強調生活中哪一種關係格外重要？", opts: ["與名人或網紅的互動","與深厚情感、親密關係的伴侶之間的關係","與陌生人的社交往來","僅限於工作上的合作關係"], ans: _A1, exp: "伴侶關係被特別強調為人生中極為珍貴且重要的支持來源。" },
+      { q: "根據本單元，良好人際關係在面對困難時可以扮演什麼角色？", opts: ["增加額外的負擔與壓力","成為穩固的支持與依靠","與面對困難毫無關聯","只會讓問題變得更複雜"], ans: _A1, exp: "深厚的人際關係能在風雨中提供穩定的支持力量。" },
+      { q: "「互惠」(Reciprocity) 在人際關係中指的是什麼概念？", opts: ["單方面不斷付出而不求回報","彼此之間給予與回饋的動態歷程","只接受幫助卻從不提供協助","關係中只有一方需要努力經營"], ans: _A1, exp: "互惠強調雙向的給予與回饋，是維繫關係的重要基礎。" },
+      { q: "本單元提到「建立連結是雙向的歷程」，這句話主要想傳達什麼？", opts: ["只需要等待別人主動對自己好","在期待他人支持的同時，也要練習成為他人的支持者","人際關係完全不需要主動經營","只有單方面付出才是真正的友誼"], ans: _A1, exp: "雙向歷程強調互相成就，這正是同儕與夥伴關係的核心精神。" }
+    ],
 
-    </svg>
-</div>
+    m5_nav: "5. 耐心與堅持", m5_title: "耐心與堅持 Patience & Persistence",
+    m5_overview: "本單元聚焦於面對挫折時所需的「耐心」與「堅持」。在快速變動的時代，許多美好的成果都需要時間醞釀；學會與挫折共處、保持韌性，是走得長遠的關鍵能力。",
+    m5_highlights: ["心理韌性", "延遲滿足", "面對挫折", "持續前行"],
+    m5_p1: "我們生活在一個步調飛快的世界，但好東西是需要時間磨出來的。你們一定會遇到挫折、被拒絕，或是懷疑自己的時候，這都很正常。重要的是，不要把單一次的失敗，放大成對自己整體價值的否定。",
+    m5_p2: "這時，耐心會讓你有喘息的空間，而堅持會給你繼續走下去的意志力。耐心並非消極等待，而是一種在不確定中仍願意持續投入、相信過程價值的態度；堅持則是把目標拆解成一個個小步驟，逐步累積、逐步前進的行動力。",
+    m5_p3: "面對挑戰時的韌性，才是讓你走得長遠的關鍵。心理韌性 (Resilience) 並非與生俱來、固定不變的特質，而是可以透過經驗、反思與支持系統逐漸培養起來的能力。每一次從挫折中重新站起，都是在為這份韌性增添厚度。",
+    m5_p4: "就一步一步、持續地往前走吧。當我們把焦點從「結果是否完美」轉移到「今天是否比昨天前進了一點」，過程本身便會變得更可承受，也更值得珍惜。這種視角的轉換，正是耐心與堅持得以長期維持的關鍵。",
+    m5_wrapup: "耐心與堅持，是貫穿整個五對 P 原則的底層韌性。它提醒我們：成長與成就很少是一蹴可幾的，挫折與等待是過程的一部分。只要願意持續投入、一步步前進，時間終將見證累積的力量。",
+    m5_terms: [
+      { front: "Resilience 心理韌性", back: "個人在面對逆境、挫折或壓力時，能夠調適、恢復並持續成長的心理能力。" },
+      { front: "Delayed Gratification 延遲滿足", back: "為了長期更有價值的目標，願意暫緩當下立即享樂或回報的自我調節能力。" },
+      { front: "Grit 恆毅力", back: "結合熱情與毅力，長期投入並堅持追求目標的人格特質與行為傾向。" },
+      { front: "Growth Through Adversity 逆境成長", back: "個人在經歷挑戰與困境後，獲得更深刻體悟、能力提升或價值觀轉化的歷程。" },
+      { front: "Incremental Progress 漸進式進步", back: "透過將大目標拆解為小步驟，逐步累積、持續推進以達成最終成果的策略。" }
+    ],
+    m5_q: [
+      { q: "演講中如何形容「好東西」的養成過程？", opts: ["應該越快達成越好，不需要等待","好東西是需要時間磨出來的","只要努力一次就能立刻看見成果","與時間長短完全無關"], ans: _A1, exp: "本單元強調許多有價值的成果需要時間累積與醞釀。" },
+      { q: "根據本單元，「耐心」在面對挫折時扮演什麼角色？", opts: ["讓人陷入焦慮無法行動","給予喘息的空間，協助度過不確定的階段","與面對挫折毫無關係","只會拖延問題的解決"], ans: _A1, exp: "耐心提供喘息與調適的空間，是度過困難階段的重要力量。" },
+      { q: "「心理韌性」(Resilience) 在本單元中被理解為下列何者？", opts: ["少數人天生具備、無法後天培養的特質","可透過經驗、反思與支持系統逐漸培養的能力","與面對挑戰的能力完全無關","只在重大災難中才會用到的特質"], ans: _A1, exp: "心理韌性是可以透過經驗與反思逐步培養與強化的能力。" },
+      { q: "本單元建議我們應該將關注的焦點放在何處？", opts: ["只專注於最終結果是否完美無瑕","今天是否比昨天前進了一點","與他人比較自己的進度快慢","完全忽略過程只看最終排名"], ans: _A1, exp: "把焦點放在持續的小幅前進，能讓過程更可承受也更有意義。" },
+      { q: "下列何者最符合「堅持」(Persistence) 在本單元中的描述？", opts: ["不顧一切、毫無調整地蠻幹到底","把目標拆解成小步驟，逐步累積、持續前進","遇到困難立刻放棄轉換方向","只在順利時才願意繼續努力"], ans: _A1, exp: "堅持強調的是拆解目標、循序漸進地持續投入。" }
+    ],
 
+    mlab_nav: "6. 互動實驗室", mlab_title: "互動實驗室",
+    mlab_desc: "透過下列互動活動，將五對 P 原則應用到自己的生活情境中，進行自我檢視與反思練習。",
+    mlab_labs: [
+      { title: "五項原則自我評分雷達", desc: "為自己在五對 P 原則上的現況評分，視覺化呈現你目前的優勢與待加強面向。" },
+      { title: "職涯選擇情境模擬", desc: "面對兩個虛構職缺，依據五對 P 原則的考量權重做出選擇，並檢視你的決策傾向。" },
+      { title: "熱情與報酬平衡計算器", desc: "輸入你對熱情、意義與報酬的相對重視程度，模擬呈現可能的職涯滿意度落點。" },
+      { title: "韌性小日記", desc: "記錄一次最近遇到的小挫折與你的因應方式，練習用「耐心與堅持」的角度重新詮釋它。" }
+    ],
+
+    mres_nav: "7. 外部學習資源", mres_title: "外部學習資源",
+    mres_desc: "以下精選資源可協助你進一步認識熱情探索、專業發展、財務規劃、人際經營與心理韌性等主題。",
+
+    date: "Version 2026.06.08",
+    copyright: "For Educational Use Only",
+    architect_label: "Architect:",
+    architect_name: "Prof. Shihmin Lo",
+    architect_url: "https://www.ibs.ncnu.edu.tw/index.php/faculty/tenured-professor/299-smlo"
+  },
+  en: {
+    brand: "5PAIRS", title: "5 Pairs of P-Principles for Life and Career",
+    subtitle: "A Warm Guidance for Graduates — Prof. Shihmin Lo",
+    nav_modules: "Modules", nav_prev: "← Previous", nav_next: "Next →", nav_home: "Home",
+    key_terms: "Key Terms", flip_prompt: "Click to flip",
+    flip_status: "Read {read} / Shown {shown} / Total {total}",
+    flip_next: "Next", flip_retry: "Restart",
+    audio_read: "Audio Guide",
+    quiz_title: "Module Knowledge Check",
+    quiz_status: "Correct {correct} / Answered {answered} / Total {total}",
+    quiz_next: "Next", quiz_retry: "Retry",
+    submit: "Submit",
+    score: "Score", correct: "Correct", incorrect: "Incorrect", explanation: "Explanation",
+    overview_label: "Overview", highlights_label: "Highlights",
+    deep_dive_label: "Deep Dive", wrapup_label: "Wrap-up",
+
+    analytics_title: "Learning Analytics", analytics_desc: "Review your learning trajectory, quiz performance, and topics for review. All data is stored only in your local browser.",
+    analytics_form_title: "Basic Information",
+    analytics_group: "Group", analytics_group_select: "Please select", analytics_dept: "Department/Year",
+    analytics_dept_ph: "e.g., IBS3",
+    analytics_id: "Student ID", analytics_id_ph: "e.g., 113212599",
+    analytics_name_en: "English Name", analytics_name_en_ph: "e.g., Shihmin Lo",
+    analytics_name_zh: "Chinese Name", analytics_name_zh_ph: "e.g., 王阿吉",
+    analytics_export_csv: "Export CSV Records",
+    analytics_fill_required: "Please complete all fields to unlock export",
+    analytics_refresh_prompt: "Refresh saved records?",
+    group_options: ["G1","G2","G3","G4","G5","G6","G7","G8","G9","G10","G11","G12","Others"],
+    analytics_total_time: "Total Study Time", analytics_total_clicks: "Total Interactions",
+    analytics_overall_acc: "Overall Quiz Accuracy",
+    analytics_card_usage: "Flashcard Usage",
+    analytics_module: "Module", analytics_time: "Time Spent",
+    analytics_clicks: "Clicks", analytics_acc: "Accuracy",
+    analytics_correct_ans_total: "Correct / Answered / Total",
+    analytics_cards_read_total: "Read / Total",
+    analytics_no_data: "Not yet attempted", analytics_sec: "sec", analytics_times: "times",
+    analytics_progress_title: "Overall Progress",
+    analytics_progress_visited: "Visited", analytics_progress_not_visited: "Not Visited",
+    analytics_progress_quiz_done: "Quiz Done",
+    analytics_wp_title: "Weak Points & Review Suggestions",
+    analytics_wp_incorrect: "Incorrect Questions:",
+    analytics_wp_goto: "→ Go review this module",
+    analytics_wp_allpass: "All attempted modules scored 75% or above. Excellent work!",
+    analytics_wp_saved: "Learning history is auto-saved in your browser",
+    analytics_wp_clear: "🗑 Clear History",
+    analytics_wp_clear_confirm: "Are you sure you want to clear all learning history? This cannot be undone.",
+    analytics_wp_tts_intro: "Here is your weak point analysis.",
+    analytics_wp_tts_module: "Module: {name}, accuracy {acc}%, review recommended.",
+    analytics_wp_tts_allpass: "Congratulations! All attempted modules scored 75% or above.",
+
+    m0_nav: "0. Executive Summary",
+    m0_title: "5 Pairs of P-Principles for Life and Career",
+    m0_intro: "Graduates, dear family, friends, and faculty—welcome, and congratulations! Today is a wonderful milestone. As you leave this campus and head into the future, Prof. Shihmin Lo wants to share a simple framework: the \\"Five Pairs of P-Principles.\\" This is not meant to hand you a ready-made answer, but to act as a mirror—so that whenever you face the uncertainty of job-hunting, the challenges of the workplace, or transitions in life, you can pause and ask yourself: which of these principles does my current choice reflect, and which might still be missing? These five pairs are deeply interconnected—Passion and Purpose give your work direction, Profession and Progress help you stand firm, Payoff and Prosperity provide security for life, Peers and Partners make sure the journey is never lonely, and Patience and Persistence build the resilience that carries you through hard times. This course will walk you through each pair—what it means, how it connects to the others, and how to put it into practice in everyday life. We hope this guidance will accompany you through the transition from campus to society, and serve as a compass whenever you find yourself uncertain about the path ahead.",
+    m0_why: "Why is this framework worth your time?",
+    m0_why_desc: "Graduation marks a major turning point in life. Many people, in their early career, focus only on salary and job titles, overlooking long-term self-fulfillment and life balance. These five pairs of P-Principles offer a holistic lens—helping you weigh intrinsic motivation, professional growth, practical living needs, social support, and psychological resilience together, so that your career path can be both sustainable and grounded.",
+    m0_modules: [
+      { num: "01", title: "Passion & Purpose", desc: "Find the reason that gets you out of bed, and see the deeper value behind your work." },
+      { num: "02", title: "Profession & Progress", desc: "Build knowledge, skills, and attitude through lifelong learning and steady growth." },
+      { num: "03", title: "Payoff & Prosperity", desc: "Pursue fair compensation while caring for your physical and mental well-being." },
+      { num: "04", title: "Peers & Partners", desc: "Build a supportive network at work, and cherish the partner who matters most in life." },
+      { num: "05", title: "Patience & Persistence", desc: "Stay resilient through setbacks, and keep moving forward step by step." }
+    ],
+    m0_stats: [
+      { val: "5", label: "Core Principle Pairs" },
+      { val: "300+", label: "Words of Deep-dive per Module" },
+      { val: "20+", label: "Interactive Cards & Quizzes" },
+      { val: "1", label: "Heartfelt Message for Graduates" }
+    ],
+    m0_start: "Start Learning →",
+
+    m1_nav: "1. Passion & Purpose", m1_title: "Passion & Purpose",
+    m1_overview: "This module explores how Passion and Purpose serve as an inner compass for career choices. Early in one's career, it's easy to focus only on finding a job that pays the bills—but asking \\"what makes me want to get out of bed every morning\\" can gradually transform work from a chore into a meaningful journey.",
+    m1_highlights: ["Intrinsic Motivation", "Talent & Contribution", "Sense of Meaning", "Career Direction"],
+    m1_p1: "When you start working, it's easy to just focus on getting a job to pay the bills. But Prof. Lo encourages graduates to look a bit further—to find what truly motivates them. This doesn't mean quitting your current job to chase a dream overnight; rather, it's a reminder to leave space, in every choice you make, to listen to your inner voice: what makes you want to get out of bed in the morning?",
+    m1_p2: "Purpose is about seeing the meaning behind your work, and how your unique talents can make the world just a little bit better. When we connect daily tasks to a larger sense of value, even ordinary-seeming work can reveal an extraordinary kind of meaning.",
+    m1_p3: "When your daily job matches your inner passion, work becomes a rewarding journey, not just a chore. This kind of alignment rarely happens perfectly from day one—it's usually something that emerges gradually, through trial, adjustment, and accumulated experience.",
+    m1_p4: "It's worth noting that passion isn't something you \\"find once and keep forever\\"—it's more like an ongoing conversation between you, your work, and your inner values. As you move through different ages, roles, and life stages, the shape of your passion may evolve too, and that is entirely natural.",
+    m1_wrapup: "Passion and Purpose form the most fundamental compass of any career journey. They remind us that choosing a job isn't just about choosing a paycheck—it's about choosing a way of life that you're willing to invest in daily, and through which you can feel a genuine sense of contribution. Setting out with this awareness will make your career path feel more grounded and directional.",
+    m1_terms: [
+      { front: "Purpose", back: "An individual's awareness and recognition of the social value and contribution of their work—a core driver of long-term engagement." },
+      { front: "Intrinsic Motivation", back: "Drive that comes from personal interest, curiosity, or values, rather than from external rewards." },
+      { front: "Calling", back: "A view of work as a dual mission of self-fulfillment and service to others, beyond mere subsistence." },
+      { front: "Self-Actualization", back: "The highest level in Maslow's hierarchy of needs—a psychological state of fully realizing one's potential and pursuing growth and meaning." },
+      { front: "Job Crafting", back: "The process by which employees proactively reshape the tasks, relationships, or perceptions of their job to better align with personal passions and values." }
+    ],
+    m1_q: [
+      { q: "According to Prof. Lo, what does \\"Purpose\\" mainly refer to?", opts: ["The speed of salary raises and promotions","Seeing the value behind your work and how your talents can improve the world","The size and reputation of the company","The length of daily working hours"], ans: _A1, exp: "Purpose is about seeing the value and contribution of work, not external conditions." },
+      { q: "Beyond basic living needs, what question does the talk suggest graduates ask themselves when job-hunting?", opts: ["Which job offers the highest starting salary","What makes me want to get out of bed every morning","Which industry is currently the most popular","Whose company has the best perks"], ans: _A1, exp: "This question helps clarify one's intrinsic passion and motivation." },
+      { q: "When daily work aligns with inner passion, how is work described?", opts: ["A heavy burden","A rewarding journey","An unavoidable obligation","Purely a means to earn money"], ans: _A1, exp: "Alignment with inner passion transforms work into a meaningful journey rather than a routine chore." },
+      { q: "Which of the following best reflects the concept of Job Crafting?", opts: ["Following every instruction from your manager without any adjustment","Proactively adjusting tasks or interactions to better match your passion","Focusing solely on improving efficiency and output numbers","Completely separating work from personal life"], ans: _A1, exp: "Job Crafting emphasizes employees actively reshaping their work to fit personal values." },
+      { q: "What perspective does this module offer regarding the nature of \\"passion\\"?", opts: ["Once found, passion remains fixed forever","Passion is an ongoing conversation that evolves with life stages","Passion has no relation to the content of one's work","Passion only exists during youth"], ans: _A1, exp: "Passion is more like an ongoing conversation that naturally transforms across life stages." }
+    ],
+
+    m2_nav: "2. Profession & Progress", m2_title: "Profession & Progress",
+    m2_overview: "This module focuses on building professional competence and sustaining progress. The world changes quickly, and what you learned in school is only a starting point. Lifelong learning—building knowledge, skills, and attitude—is essential to thriving in a fast-changing environment.",
+    m2_highlights: ["Lifelong Learning", "Competencies", "Knowledge-Skill-Attitude", "Continuous Growth"],
+    m2_p1: "The world changes fast, and what you learned here is just the starting point. To really thrive, you need to build your professional competencies—growing your knowledge, skills, and most importantly, your attitude—through lifelong learning.",
+    m2_p2: "Stay curious. Keep asking questions. True progress isn't just about a promotion; it's about growing these competencies every single day. This kind of daily accumulation may seem small, but over time it becomes your strongest support—whether facing new challenges or seizing unexpected opportunities.",
+    m2_p3: "Just try to be a little better tomorrow than you are today. This simple reminder actually carries the spirit of a \\"growth mindset\\"—seeing ability as something that can be developed continuously through effort and learning, rather than as a fixed trait.",
+    m2_p4: "In practice, profession and progress aren't purely individual matters—they're closely tied to the team and organizational culture you're part of. An environment that encourages questions, tolerates mistakes, and values knowledge-sharing makes lifelong learning feel natural; in a more rigid environment, you'll need to take more initiative to seek out learning opportunities yourself.",
+    m2_wrapup: "Profession and Progress remind us to treat each day as a chance to build real capability. Knowledge, skills, and attitude are equally indispensable, and staying curious with a growth mindset is the key to standing firm—even thriving—in a rapidly changing world.",
+    m2_terms: [
+      { front: "Lifelong Learning", back: "The ongoing process of actively learning and updating one's knowledge and skills throughout life to keep pace with a changing environment." },
+      { front: "Competency", back: "A composite ability made up of knowledge, skills, and attitude—the foundation for effectively completing work tasks." },
+      { front: "Growth Mindset", back: "The belief that abilities can be developed continuously through effort, strategy, and feedback, rather than being fixed traits." },
+      { front: "Knowledge / Skill / Attitude", back: "The three pillars of competency: knowledge as the cognitive base, skill as operational ability, and attitude as values and willingness to engage." },
+      { front: "Continuous Improvement", back: "A management philosophy of repeatedly reviewing, adjusting, and optimizing to gradually elevate individual or organizational performance." }
+    ],
+    m2_q: [
+      { q: "According to this module, what three elements make up \\"competencies\\"?", opts: ["Salary, title, and seniority","Knowledge, skills, and attitude","Education, connections, and appearance","Luck, timing, and background"], ans: _A1, exp: "Knowledge, skills, and attitude form the core of professional competencies." },
+      { q: "How does the talk describe \\"true progress\\"?", opts: ["Only about whether you get promoted or get a raise","Continuous daily growth in your professional competencies","How much bonus the company gives you","How much your peers approve of you"], ans: _A1, exp: "True progress comes from the daily accumulation of competency growth." },
+      { q: "What is the core belief behind a \\"Growth Mindset\\"?", opts: ["Abilities are fixed at birth and cannot change","Abilities can be continuously developed through effort and learning","Only a few people are capable of becoming excellent","Learning only matters during school years"], ans: _A1, exp: "A growth mindset holds that abilities can improve through sustained effort." },
+      { q: "Which of the following best reflects the spirit of \\"Lifelong Learning\\"?", opts: ["No longer needing to learn new things after graduation","Staying curious and proactively updating knowledge and skills to adapt to change","Only attending training when the company requires it","Believing experience matters more than learning new things"], ans: _A1, exp: "Lifelong learning emphasizes continuous, proactive learning to adapt to change." },
+      { q: "How does this module describe the influence of organizational culture on professional growth?", opts: ["Culture has nothing to do with personal growth","An environment that encourages questions and sharing makes lifelong learning happen more naturally","Only large companies have resources to develop talent","Organizational culture only affects salary, not learning"], ans: _A1, exp: "A supportive organizational culture fosters a learning atmosphere and personal growth." }
+    ],
+
+    m3_nav: "3. Payoff & Prosperity", m3_title: "Payoff & Prosperity",
+    m3_overview: "This module discusses fair compensation and holistic prosperity. While passion matters, knowing your worth and seeking recognition that matches your contribution is equally important; true prosperity goes beyond financial stability to include physical and mental well-being.",
+    m3_highlights: ["Fair Compensation", "Self-Worth", "Financial Security", "Well-being"],
+    m3_p1: "Passion is great, but knowing your worth is just as important. You deserve recognition and pay that match your hard work and contributions—don't be afraid to speak up for yourself. Many new graduates, lacking confidence or experience, tend to underestimate themselves during salary negotiations; this is actually a skill worth practicing early on.",
+    m3_p2: "Financial security is a very real part of growing up, but true prosperity isn't only about money. It also means taking care of your physical and mental health, and living a balanced life. Financial stability gives us more freedom and confidence when facing major life decisions.",
+    m3_p3: "\\"Prosperity\\" is a multi-dimensional concept—beyond income and savings, it includes adequate rest, regular exercise, good relationships, and a sense of control over one's life. When all these dimensions are cared for, your engagement at work also becomes more sustainable, rather than trading health for short-term results.",
+    m3_p4: "It's worth noting that \\"fair payoff\\" doesn't mean \\"the more, the better\\"—it means compensation that is proportionate to your contribution, market standards, and personal needs. Learning to assess your own market value, understand industry pay norms, and communicate rationally at the right moments are key steps toward long-term career security.",
+    m3_wrapup: "Payoff and Prosperity remind us that recognizing our own worth, seeking fair treatment, and caring for our physical and mental health are equally important pursuits. Only when financial security and life balance go hand in hand can we pursue our passions and keep growing with greater ease over the long run.",
+    m3_terms: [
+      { front: "Fair Compensation", back: "Pay and benefits that are proportionate to one's contribution, ability, and market standards—an important indicator of workplace fairness." },
+      { front: "Financial Security", back: "A state in which an individual or family has enough resilience in income, savings, and risk management to face life's uncertainties with confidence." },
+      { front: "Work-Life Balance", back: "A relatively coordinated and satisfying state between one's investment in work and in life, rest, and relationships." },
+      { front: "Well-being", back: "A holistic state encompassing physical health, mental health, and the quality of one's social relationships." },
+      { front: "Self-Advocacy", back: "The ability and action of proactively expressing one's needs, values, and rights to secure deserved recognition and treatment." }
+    ],
+    m3_q: [
+      { q: "What attitude does this module suggest graduates take toward compensation?", opts: ["Never bring up salary under any circumstances","Know your own worth and speak up for yourself when appropriate","As long as you have a job, pay doesn't matter","Salary is entirely a matter of luck"], ans: _A1, exp: "Knowing your worth and speaking up appropriately is the first step toward fair compensation." },
+      { q: "According to the talk, what does \\"true prosperity\\" include besides money?", opts: ["The level of your job title","Physical and mental health and life balance","Your image on social media","The number of hours you work"], ans: _A1, exp: "Prosperity is multi-dimensional, encompassing health and balance—not just money." },
+      { q: "How is \\"fair payoff\\" understood in this module?", opts: ["Salary should always be as high as possible, with no limit","Compensation that is proportionate to contribution, market standards, and needs","Decided entirely by the company with no employee input","Directly tied only to years of seniority"], ans: _A1, exp: "Fair payoff emphasizes proportionality, not simply maximizing the number." },
+      { q: "What impact might financial security have on career choices?", opts: ["It tends to make people more anxious","It provides more freedom and confidence when facing major decisions","It has nothing to do with career choices","It only makes people greedy"], ans: _A1, exp: "Financial stability increases composure and options when facing life decisions." },
+      { q: "Which of the following best reflects the spirit of Work-Life Balance?", opts: ["Devoting all your time to work for faster promotion","Achieving coordination between work and life, rest, and relationships","Refusing any overtime or extra tasks whatsoever","Believing work and life should have no overlap at all"], ans: _A1, exp: "Work-life balance emphasizes coordination and relative satisfaction, not extreme separation." }
+    ],
+
+    m4_nav: "4. Peers & Partners", m4_title: "Peers & Partners",
+    m4_overview: "This module explores building a supportive network of peers at work, and cherishing the partner relationships in life. Strong human connections—whether at work or in personal life—are vital forces that help us through life's ups and downs.",
+    m4_highlights: ["Support Network", "Workplace Allies", "Intimate Relationships", "Social Capital"],
+    m4_p1: "At work, connect with your peers—your colleagues, mentors, and friends who support you. These relationships don't have to be dramatic; sometimes a single word of encouragement or a shared experience can make a huge difference at a critical moment.",
+    m4_p2: "But more importantly, Prof. Lo especially emphasizes the \\"Partners\\" in your personal life. Cherish the person you share a deep, intimate relationship with. Finding a true life partner to build a future—and perhaps a family—with is something truly special.",
+    m4_p3: "Nurture that relationship, because they will be your strongest support when things get tough. Whether it's workplace partnerships or intimate relationships in personal life, both require continuous investment, listening, and mutual understanding to deepen over time.",
+    m4_p4: "It's worth noting that building connections is a two-way process: while hoping others will support us, we should also practice being someone willing to lend a hand in others' lives. This mutually empowering network of relationships is the core spirit that \\"Peers and Partners\\" aims to convey.",
+    m4_wrapup: "Peers and Partners remind us that no one is an island. Whether it's colleagues who support each other at work, or a life partner who walks alongside you, these relationships are among the most important pillars on your journey forward. Investing in them with care will add warmth and resilience to your life.",
+    m4_terms: [
+      { front: "Social Capital", back: "The trust, resources, and reciprocal relationships an individual accumulates through their social network, which can offer both practical and emotional support when needed." },
+      { front: "Mentor", back: "An experienced ally who shares experience, advice, and guidance, helping others grow on their professional or life journey." },
+      { front: "Intimate Relationship", back: "A deep relationship between an individual and a partner, built on trust, emotional connection, and mutual commitment." },
+      { front: "Reciprocity", back: "The dynamic process of giving and receiving in social interactions—an essential foundation for sustaining long-term relationships." },
+      { front: "Support Network", back: "A social system made up of family, friends, and colleagues that offers companionship and assistance through different stages of life and career." }
+    ],
+    m4_q: [
+      { q: "How does the talk suggest interacting with peers at work?", opts: ["Keep your distance to avoid getting too close","Build supportive relationships with colleagues, mentors, and friends","Only associate with people of higher rank than yourself","Treat every colleague as a competitor"], ans: _A1, exp: "Building mutually supportive peer relationships provides crucial support along the career journey." },
+      { q: "Which relationship does Prof. Lo especially emphasize in personal life?", opts: ["Interactions with celebrities or influencers","The relationship with a partner who shares deep emotional intimacy","Casual social contact with strangers","Only work-related collaborative relationships"], ans: _A1, exp: "The partner relationship is highlighted as an especially precious and important source of support." },
+      { q: "According to this module, what role can good relationships play in difficult times?", opts: ["They add extra burden and stress","They serve as a stable source of support to lean on","They have nothing to do with facing difficulties","They only make problems more complicated"], ans: _A1, exp: "Deep relationships provide a stable source of support during turbulent times." },
+      { q: "What does \\"Reciprocity\\" refer to in relationships?", opts: ["Giving endlessly without expecting anything in return","The dynamic process of mutual giving and receiving","Only accepting help while never offering any in return","A relationship where only one side needs to put in effort"], ans: _A1, exp: "Reciprocity emphasizes two-way giving and receiving as the basis of sustaining relationships." },
+      { q: "What is the main message behind \\"building connections is a two-way process\\"?", opts: ["You only need to wait for others to be kind to you first","While hoping for others' support, also practice becoming a supporter for others","Relationships require no proactive effort at all","Only one-sided giving counts as true friendship"], ans: _A1, exp: "A two-way process emphasizes mutual empowerment—the core spirit of peers and partners." }
+    ],
+
+    m5_nav: "5. Patience & Persistence", m5_title: "Patience & Persistence",
+    m5_overview: "This module focuses on the patience and persistence needed to face setbacks. In a fast-paced world, many good things take time to develop. Learning to coexist with setbacks and stay resilient is the key to going the distance.",
+    m5_highlights: ["Resilience", "Delayed Gratification", "Facing Setbacks", "Moving Forward"],
+    m5_p1: "We live in a fast-paced world, but good things take time. You will face setbacks, rejections, and moments when you doubt yourself—that's completely normal. What matters is not letting a single failure expand into a judgment of your overall worth.",
+    m5_p2: "When that happens, patience gives you the space to breathe, and persistence gives you the grit to keep going. Patience isn't passive waiting—it's a willingness to keep investing amid uncertainty and to trust the value of the process; persistence is the action of breaking goals into small steps and steadily moving forward.",
+    m5_p3: "Resilience is what helps you go the distance when facing challenges. Resilience isn't an innate, fixed trait—it's a capacity that can gradually be developed through experience, reflection, and supportive systems. Every time you rise again from a setback, you add a little more depth to that resilience.",
+    m5_p4: "Keep taking it one step at a time. When we shift our focus from \\"is the result perfect\\" to \\"did I move forward a little compared to yesterday,\\" the process itself becomes more bearable—and more worth cherishing. This shift in perspective is exactly what allows patience and persistence to be sustained over the long run.",
+    m5_wrapup: "Patience and Persistence form the underlying resilience that runs through all five pairs of P-Principles. They remind us that growth and achievement rarely happen overnight—setbacks and waiting are part of the process. As long as we keep investing and moving forward step by step, time will eventually reveal the power of accumulation.",
+    m5_terms: [
+      { front: "Resilience", back: "The psychological capacity to adapt, recover, and continue growing when facing adversity, setbacks, or pressure." },
+      { front: "Delayed Gratification", back: "The self-regulatory ability to postpone immediate pleasure or reward in pursuit of a more valuable long-term goal." },
+      { front: "Grit", back: "A personality trait combining passion and perseverance—the tendency to stay committed to long-term goals." },
+      { front: "Growth Through Adversity", back: "The process by which individuals gain deeper insight, improved capability, or transformed values through experiencing challenges and hardship." },
+      { front: "Incremental Progress", back: "A strategy of breaking large goals into small steps, gradually accumulating and advancing toward the final outcome." }
+    ],
+    m5_q: [
+      { q: "How does the talk describe the process by which \\"good things\\" come about?", opts: ["They should be achieved as fast as possible without waiting","Good things take time to develop","A single effort is enough to see immediate results","Time has nothing to do with it"], ans: _A1, exp: "This module emphasizes that valuable outcomes often require time to accumulate and mature." },
+      { q: "According to this module, what role does \\"patience\\" play when facing setbacks?", opts: ["It causes anxiety and prevents action","It provides space to breathe and helps one through uncertain stages","It has nothing to do with facing setbacks","It only delays solving the problem"], ans: _A1, exp: "Patience offers room to breathe and adapt—an important force for getting through hard times." },
+      { q: "How is \\"Resilience\\" understood in this module?", opts: ["An innate trait that only some people are born with and cannot be developed","An ability that can be gradually developed through experience, reflection, and support systems","Something completely unrelated to the ability to face challenges","A trait only useful in major disasters"], ans: _A1, exp: "Resilience is a capacity that can be progressively built through experience and reflection." },
+      { q: "Where does this module suggest we should place our focus?", opts: ["Solely on whether the final result is flawless","On whether we moved forward a little compared to yesterday","On comparing our progress with others","On ignoring the process and only caring about final rankings"], ans: _A1, exp: "Focusing on small, steady forward progress makes the process more bearable and meaningful." },
+      { q: "Which of the following best matches how \\"Persistence\\" is described in this module?", opts: ["Pushing forward recklessly without any adjustment","Breaking goals into small steps and steadily moving forward","Giving up immediately and changing direction at the first sign of difficulty","Only continuing to make an effort when things go smoothly"], ans: _A1, exp: "Persistence emphasizes breaking down goals and steadily sustaining effort over time." }
+    ],
+
+    mlab_nav: "6. Interactive Lab", mlab_title: "Interactive Lab",
+    mlab_desc: "Use the activities below to apply the five pairs of P-Principles to your own life situations through self-reflection and practice.",
+    mlab_labs: [
+      { title: "Five-Principle Self-Rating Radar", desc: "Rate yourself across the five pairs of P-Principles and visualize your current strengths and areas for growth." },
+      { title: "Career Choice Scenario Simulator", desc: "Choose between two hypothetical job offers based on the weight you give to each P-Principle, and review your decision tendencies." },
+      { title: "Passion vs. Payoff Balance Calculator", desc: "Enter how much you value passion, meaning, and compensation to simulate a possible career-satisfaction outcome." },
+      { title: "Resilience Mini-Journal", desc: "Record a recent small setback and how you responded—then practice reframing it through the lens of patience and persistence." }
+    ],
+
+    mres_nav: "7. Learning Resources", mres_title: "External Learning Resources",
+    mres_desc: "The resources below can help you further explore passion discovery, professional development, financial planning, relationship building, and psychological resilience.",
+
+    date: "Version 2026.06.08",
+    copyright: "For Educational Use Only",
+    architect_label: "Architect:",
+    architect_name: "Prof. Shihmin Lo",
+    architect_url: "https://www.ibs.ncnu.edu.tw/index.php/faculty/tenured-professor/299-smlo"
+  }
+};
+
+const FlipCardDeck = ({ terms, t, moduleId, onCardRead }) => {
+  const [groupIdx, setGroupIdx] = useState(0);
+  const [flipped, setFlipped] = useState({});
+  const [readSet, setReadSet] = useState(new Set());
+  const [shownSet, setShownSet] = useState(new Set());
+  const [shuffledOrder] = useState(() => [...Array(terms.length).keys()].sort(() => Math.random() - 0.5));
+  const groupSize = 2;
+  const totalGroups = Math.ceil(terms.length / groupSize);
+  const startIdx = groupIdx * groupSize;
+  const currentCardIndices = shuffledOrder.slice(startIdx, startIdx + groupSize);
+
+  useEffect(() => {
+    const newShown = new Set(shownSet);
+    currentCardIndices.forEach(idx => newShown.add(idx));
+    if (newShown.size !== shownSet.size) setShownSet(newShown);
+  }, [groupIdx]);
+
+  const handleFlip = (origIdx) => {
+    setFlipped(f => ({ ...f, [origIdx]: !f[origIdx] }));
+    if (!readSet.has(origIdx)) {
+      const newRead = new Set(readSet); newRead.add(origIdx); setReadSet(newRead);
+      if (onCardRead) onCardRead(moduleId, newRead.size, shownSet.size, terms.length);
+    }
+  };
+
+  const statusText = t.flip_status.replace('{read}', readSet.size).replace('{shown}', shownSet.size).replace('{total}', terms.length);
+
+  return (
+    <div className="mt-8">
+      <h3 className="text-lg font-bold uppercase tracking-wider text-slate-500 mb-2">{t.key_terms}</h3>
+      <p className="text-sm text-slate-400 mb-4">{statusText}</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {currentCardIndices.map((origIdx) => {
+          const term = terms[origIdx];
+          return (
+            <div key={origIdx} className="perspective cursor-pointer h-36" onClick={() => handleFlip(origIdx)}>
+              <div className={`transform-style-3d relative w-full h-full transition-transform duration-500 ${flipped[origIdx] ? 'rotate-y-180' : ''}`}>
+                <div className="backface-hidden absolute inset-0 bg-white dark:bg-slate-800 rounded-xl p-4 flex flex-col items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm">
+                  <p className="font-serif font-bold text-center text-[#004030] dark:text-[#D8C3A5]">{term.front}</p>
+                  <p className="text-xs text-slate-400 mt-2">{t.flip_prompt}</p>
+                </div>
+                <div className="backface-hidden rotate-y-180 absolute inset-0 bg-[#004030] dark:bg-slate-700 rounded-xl p-4 flex items-center justify-center">
+                  <p className="text-sm text-center text-[#D8C3A5] dark:text-slate-200 leading-relaxed">{term.back}</p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div className="flex items-center gap-3 mt-4">
+        <button onClick={() => { setGroupIdx(0); setFlipped({}); }}
+          className="px-4 py-2 text-sm border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">{t.flip_retry}</button>
+        <button onClick={() => groupIdx < totalGroups-1 && setGroupIdx(groupIdx+1)} disabled={groupIdx >= totalGroups-1}
+          className="px-4 py-2 text-sm bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] font-bold rounded-lg disabled:opacity-40">{t.flip_next}</button>
+      </div>
+    </div>
+  );
+};
+
+const ModuleQuiz = ({ questions, t, moduleId, onQuizSubmit, moduleName }) => {
+  const [selected, setSelected] = useState({});
+  const [submitted, setSubmitted] = useState({});
+  const [groupIdx, setGroupIdx] = useState(0);
+  const groupSize = 2;
+  const [quizIndices] = useState(() => [...Array(questions.length).keys()].sort(() => Math.random() - 0.5));
+  const totalGroups = Math.ceil(quizIndices.length / groupSize);
+  const [shuffledMaps] = useState(() => quizIndices.map(qIdx => {
+    const n = questions[qIdx].opts.length;
+    return [...Array(n).keys()].sort(() => Math.random() - 0.5);
+  }));
+
+  const totalAnswered = Object.keys(selected).length;
+  const computeCorrect = () => {
+    let c = 0;
+    quizIndices.forEach((qIdx, qi) => {
+      if (selected[qi] === undefined) return;
+      if (shuffledMaps[qi][selected[qi]] === _d(questions[qIdx].ans)) c++;
+    });
+    return c;
+  };
+  const statusText = t.quiz_status.replace('{correct}', computeCorrect()).replace('{answered}', totalAnswered).replace('{total}', quizIndices.length);
+  const currentStart = groupIdx * groupSize;
+  const currentIndices = quizIndices.slice(currentStart, currentStart + groupSize);
+
+  const handleGroupSubmit = () => {
+    const allDone = currentIndices.every((_, i) => selected[currentStart + i] !== undefined);
+    if (!allDone) return;
+    const newSubmitted = { ...submitted, [groupIdx]: true };
+    setSubmitted(newSubmitted);
+    if (Object.keys(newSubmitted).length === totalGroups) {
+      const wrongQs = [];
+      let correct = 0;
+      quizIndices.forEach((qIdx, qi) => {
+        if (selected[qi] === undefined) return;
+        if (shuffledMaps[qi][selected[qi]] === _d(questions[qIdx].ans)) correct++;
+        else wrongQs.push(questions[qIdx].q);
+      });
+      onQuizSubmit(moduleId, correct, quizIndices.length, wrongQs, moduleName);
+    }
+  };
+
+  return (
+    <div className="mt-8 bg-slate-50 dark:bg-slate-900/50 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
+      <h3 className="text-lg font-bold font-serif text-[#004030] dark:text-[#D8C3A5] mb-2">{t.quiz_title}</h3>
+      <p className="text-sm text-slate-400 mb-6">{statusText}</p>
+      {currentIndices.map((qIdx, localI) => {
+        const qi = currentStart + localI;
+        const q = questions[qIdx];
+        const sMap = shuffledMaps[qi];
+        const isGrpSub = !!submitted[groupIdx];
+        return (
+          <div key={qIdx} className="mb-6">
+            <p className="font-bold mb-3">{qi+1}. {q.q}</p>
+            <div className="space-y-2">
+              {sMap.map((origIdx, dIdx) => {
+                const isCorrect = origIdx === _d(q.ans);
+                const isSel = selected[qi] === dIdx;
+                return (
+                  <button key={dIdx} onClick={() => !isGrpSub && setSelected(s => ({...s, [qi]: dIdx}))}
+                    className={`w-full text-left px-4 py-3 rounded-lg border transition-all text-sm ${
+                      isGrpSub
+                        ? isCorrect ? 'bg-green-100 border-green-500 dark:bg-green-900/30'
+                          : isSel ? 'bg-red-100 border-red-400 dark:bg-red-900/30' : 'border-slate-200 dark:border-slate-700'
+                        : isSel ? 'border-[#004030] dark:border-[#D8C3A5] bg-[#004030]/5' : 'border-slate-200 dark:border-slate-700 hover:border-slate-400'
+                    }`}>{q.opts[origIdx]}</button>
+                );
+              })}
+            </div>
+            {isGrpSub && <p className="text-xs mt-2 text-slate-500 italic">{t.explanation}: {q.exp}</p>}
+          </div>
+        );
+      })}
+      <div className="flex items-center gap-3 mt-4">
+        <button onClick={() => { setSelected({}); setSubmitted({}); setGroupIdx(0); }}
+          className="px-4 py-2 text-sm border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">{t.quiz_retry}</button>
+        {!submitted[groupIdx] ? (
+          <button onClick={handleGroupSubmit} className="px-4 py-2 text-sm bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] font-bold rounded-lg">{t.submit}</button>
+        ) : (
+          <button onClick={() => groupIdx < totalGroups-1 && setGroupIdx(groupIdx+1)} disabled={groupIdx >= totalGroups-1}
+            className="px-4 py-2 text-sm bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] font-bold rounded-lg disabled:opacity-40">{t.quiz_next}</button>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const H2 = ({ children }) => (
+  <h2 className="text-2xl md:text-3xl font-serif font-black text-[#004030] dark:text-[#D8C3A5] mb-4 mt-10 first:mt-0">{children}</h2>
+);
+
+const LinkCard = ({ title, desc, url }) => (
+  <a href={url} target="_blank" rel="noopener noreferrer"
+    className="block p-5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-[#004030] dark:hover:border-[#D8C3A5] transition-colors shadow-sm">
+    <p className="font-bold font-serif text-[#004030] dark:text-[#D8C3A5] mb-1">{title}</p>
+    <p className="text-sm text-slate-500 dark:text-slate-400">{desc}</p>
+  </a>
+);
+
+const LabRadar = ({ lang }) => {
+  const labels = lang === 'zh'
+    ? ['熱情與意義','專業與進步','回報與繁榮','同儕與夥伴','耐心與堅持']
+    : ['Passion & Purpose','Profession & Progress','Payoff & Prosperity','Peers & Partners','Patience & Persistence'];
+  const [vals, setVals] = useState([3,3,3,3,3]);
+  const setVal = (i, v) => setVals(arr => arr.map((x,idx) => idx===i ? Number(v) : x));
+  const cx = 150, cy = 150, r = 110;
+  const pts = vals.map((v, i) => {
+    const ang = (Math.PI * 2 * i) / 5 - Math.PI/2;
+    const rad = (v/5) * r;
+    return [cx + rad*Math.cos(ang), cy + rad*Math.sin(ang)];
+  });
+  const poly = pts.map(p => p.join(',')).join(' ');
+  return (
+    <div className="grid md:grid-cols-2 gap-6 items-center">
+      <div onContextMenu={e => { e.preventDefault(); }} className="flex justify-center">
+        <svg viewBox="0 0 300 300" className="w-64 h-64" draggable="false">
+          {[1,2,3,4,5].map(ring => (
+            <polygon key={ring} fill="none" stroke="#cbd5e1" strokeWidth="1"
+              points={[...Array(5).keys()].map(i => {
+                const ang = (Math.PI*2*i)/5 - Math.PI/2;
+                const rad = (ring/5)*r;
+                return `${cx+rad*Math.cos(ang)},${cy+rad*Math.sin(ang)}`;
+              }).join(' ')} />
+          ))}
+          <polygon points={poly} fill="#004030" fillOpacity="0.35" stroke="#004030" strokeWidth="2" />
+          {pts.map((p,i) => <circle key={i} cx={p[0]} cy={p[1]} r="3" fill="#D8C3A5" stroke="#004030" />)}
+        </svg>
+      </div>
+      <div className="space-y-3">
+        {labels.map((label, i) => (
+          <div key={i}>
+            <div className="flex justify-between text-sm mb-1"><span>{label}</span><span className="font-bold">{vals[i]}</span></div>
+            <input type="range" min="1" max="5" value={vals[i]} onChange={e => setVal(i, e.target.value)} className="w-full accent-[#004030]" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const LabScenario = ({ lang }) => {
+  const t = lang === 'zh' ? {
+    q: '情境：A 公司薪資較高但工作內容平淡；B 公司薪資普通但能發揮熱情與專長。你會選擇？',
+    a: '選擇 A：穩健的回報與繁榮優先', b: '選擇 B：熱情與意義優先',
+    ra: '這個選擇傾向重視「回報與繁榮」——務實考量財務穩定，是完全合理的策略，但別忘了持續關注熱情與意義是否有機會在現職中萌芽。',
+    rb: '這個選擇傾向重視「熱情與意義」——勇於追求認同感，但也別忘了同時檢視回報與繁榮是否能滿足長期生活所需。'
+  } : {
+    q: 'Scenario: Company A pays more but the work feels flat; Company B pays average but lets you pursue your passion and strengths. Which would you choose?',
+    a: 'Choose A: Prioritize Payoff & Prosperity', b: 'Choose B: Prioritize Passion & Purpose',
+    ra: 'This leans toward "Payoff & Prosperity" — a practical focus on financial stability is a perfectly reasonable strategy, but keep watching for chances to grow passion and purpose within the role.',
+    rb: 'This leans toward "Passion & Purpose" — pursuing meaning takes courage, but also keep checking whether payoff and prosperity can sustain your long-term needs.'
+  };
+  const [choice, setChoice] = useState(null);
+  return (
+    <div>
+      <p className="mb-4">{t.q}</p>
+      <div className="flex flex-col sm:flex-row gap-3 mb-4">
+        <button onClick={() => setChoice('a')} className={`flex-1 px-4 py-3 rounded-lg border text-sm font-bold ${choice==='a' ? 'bg-[#004030] text-white border-[#004030]' : 'border-slate-300 dark:border-slate-600'}`}>{t.a}</button>
+        <button onClick={() => setChoice('b')} className={`flex-1 px-4 py-3 rounded-lg border text-sm font-bold ${choice==='b' ? 'bg-[#004030] text-white border-[#004030]' : 'border-slate-300 dark:border-slate-600'}`}>{t.b}</button>
+      </div>
+      {choice && <p className="text-sm italic text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg">{choice === 'a' ? t.ra : t.rb}</p>}
+    </div>
+  );
+};
+
+const LabBalance = ({ lang }) => {
+  const t = lang === 'zh'
+    ? { passion: '熱情／意義重視程度', payoff: '回報／報酬重視程度', result: '模擬結果' , high: '兩者兼重——你正朝向兼顧熱情與生活保障的平衡型職涯邁進，請持續對話與調整。', passionHeavy: '熱情主導型——請留意是否需要適時補強財務規劃，以支撐長期投入。', payoffHeavy: '報酬主導型——請留意是否仍保留探索意義與興趣的空間，避免長期感到空虛。' }
+    : { passion: 'Importance of Passion / Purpose', payoff: 'Importance of Payoff / Compensation', result: 'Simulated Outcome', high: 'Balanced — you are heading toward a career that values both passion and security. Keep the conversation going and keep adjusting.', passionHeavy: 'Passion-driven — consider strengthening your financial planning to sustain long-term commitment.', payoffHeavy: 'Payoff-driven — make sure to keep some room for exploring meaning and interest, to avoid feeling empty over time.' };
+  const [passion, setPassion] = useState(5);
+  const [payoff, setPayoff] = useState(5);
+  const diff = passion - payoff;
+  const msg = Math.abs(diff) <= 2 ? t.high : (diff > 2 ? t.passionHeavy : t.payoffHeavy);
+  return (
+    <div className="space-y-4">
+      <div>
+        <div className="flex justify-between text-sm mb-1"><span>{t.passion}</span><span className="font-bold">{passion}</span></div>
+        <input type="range" min="0" max="10" value={passion} onChange={e=>setPassion(Number(e.target.value))} className="w-full accent-[#004030]" />
+      </div>
+      <div>
+        <div className="flex justify-between text-sm mb-1"><span>{t.payoff}</span><span className="font-bold">{payoff}</span></div>
+        <input type="range" min="0" max="10" value={payoff} onChange={e=>setPayoff(Number(e.target.value))} className="w-full accent-[#004030]" />
+      </div>
+      <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg">
+        <p className="text-xs uppercase tracking-wider text-slate-400 mb-1">{t.result}</p>
+        <p className="text-sm italic">{msg}</p>
+      </div>
+    </div>
+  );
+};
+
+const LabJournal = ({ lang }) => {
+  const t = lang === 'zh'
+    ? { setback: '最近遇到的小挫折是什麼？', response: '當下你是怎麼回應的？', reframe: '試著用「耐心與堅持」重新詮釋：', reframePh: '例如：這次的卡關，其實是在提醒我放慢腳步、調整方法……', save: '儲存到本機（不會上傳）', saved: '已儲存於瀏覽器本機，重新整理後仍會保留。' }
+    : { setback: 'What small setback did you recently face?', response: 'How did you respond at the time?', reframe: 'Try reframing it through Patience & Persistence:', reframePh: 'e.g., This obstacle is actually reminding me to slow down and adjust my approach...', save: 'Save locally (not uploaded)', saved: 'Saved locally in your browser — it will remain after refreshing.' };
+  const [vals, setVals] = useState({ setback: '', response: '', reframe: '' });
+  const [saved, setSaved] = useState(false);
+  useEffect(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem('5p_journal') || 'null');
+      if (stored) setVals(stored);
+    } catch(e){}
+  }, []);
+  const handleSave = () => {
+    try { localStorage.setItem('5p_journal', JSON.stringify(vals)); setSaved(true); setTimeout(()=>setSaved(false), 2500); } catch(e){}
+  };
+  const sanitize = (v) => v.replace(/[<>]/g, '').slice(0, 500);
+  return (
+    <div className="space-y-4">
+      {['setback','response','reframe'].map(key => (
+        <div key={key}>
+          <label className="block text-sm font-bold mb-1">{t[key]}</label>
+          <textarea value={vals[key]} onChange={e => setVals(v => ({...v, [key]: sanitize(e.target.value)}))}
+            placeholder={key === 'reframe' ? t.reframePh : ''}
+            className="w-full p-3 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm" rows="2" />
+        </div>
+      ))}
+      <button onClick={handleSave} className="px-4 py-2 text-sm bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] font-bold rounded-lg">{t.save}</button>
+      {saved && <p className="text-xs text-green-600 dark:text-green-400">{t.saved}</p>}
+    </div>
+  );
+};
+
+const RESOURCES = {
+  zh: [
+    { title: 'TED Talks：尋找你的熱情', desc: '一系列關於發掘個人熱情與意義的精選演講。', url: 'https://www.ted.com/topics/passion' },
+    { title: 'Coursera：終身學習課程集', desc: '涵蓋知識、技能與態度養成的線上課程平台。', url: 'https://www.coursera.org' },
+    { title: '財金智慧教育資源', desc: '認識財務規劃、薪資談判與生活平衡的入門資源。', url: 'https://www.investor.gov.hk' },
+    { title: 'Greater Good Science Center', desc: '加州大學柏克萊分校關於人際關係與身心福祉的研究資源。', url: 'https://greatergood.berkeley.edu' },
+    { title: 'American Psychological Association：心理韌性', desc: '關於培養心理韌性與面對逆境的實證資源。', url: 'https://www.apa.org/topics/resilience' },
+    { title: '駱世民教授個人網頁', desc: '了解更多教授的研究領域與課程資訊。', url: 'https://www.ibs.ncnu.edu.tw/index.php/faculty/tenured-professor/299-smlo' }
+  ],
+  en: [
+    { title: 'TED Talks: Finding Your Passion', desc: 'A curated collection of talks on discovering personal passion and meaning.', url: 'https://www.ted.com/topics/passion' },
+    { title: 'Coursera: Lifelong Learning Collections', desc: 'Online courses covering knowledge, skills, and attitude development.', url: 'https://www.coursera.org' },
+    { title: 'Financial Literacy Resources', desc: 'Introductory resources on financial planning, salary negotiation, and life balance.', url: 'https://www.investor.gov' },
+    { title: 'Greater Good Science Center', desc: 'UC Berkeley research resources on relationships and well-being.', url: 'https://greatergood.berkeley.edu' },
+    { title: 'American Psychological Association: Resilience', desc: 'Evidence-based resources on building resilience and facing adversity.', url: 'https://www.apa.org/topics/resilience' },
+    { title: "Prof. Shihmin Lo's Faculty Page", desc: "Learn more about the professor's research areas and courses.", url: 'https://www.ibs.ncnu.edu.tw/index.php/faculty/tenured-professor/299-smlo' }
+  ]
+};
+
+const MODULE_ICONS = [IconHome, IconHeart, IconCpu, IconDollar, IconUsers, IconTrendingUp, IconZapLab, IconGlobe, IconActivity];
+
+function App() {
+  const [lang, setLang] = useState('en');
+  const [isDark, setIsDark] = useState(true);
+  const [active, setActive] = useState(0);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
+  const [toast, setToast] = useState(null);
+  const [analytics, setAnalytics] = useState({});
+  const [studentInfo, setStudentInfo] = useState({ group: '', dept: '', id: '', nameEn: '', nameZh: '' });
+  const visitStart = useRef(Date.now());
+  const t = dict[lang];
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', isDark);
+  }, [isDark]);
+
+  useEffect(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem('5p_analytics') || '{}');
+      setAnalytics(stored);
+      const info = JSON.parse(localStorage.getItem('5p_student') || 'null');
+      if (info) setStudentInfo(info);
+    } catch(e){}
+  }, []);
+
+  useEffect(() => {
+    visitStart.current = Date.now();
+    return () => {
+      const elapsed = Math.round((Date.now() - visitStart.current) / 1000);
+      setAnalytics(prev => {
+        const key = 'm' + active;
+        const cur = prev[key] || { time: 0, clicks: 0 };
+        const next = { ...prev, [key]: { ...cur, time: (cur.time||0) + elapsed } };
+        try { localStorage.setItem('5p_analytics', JSON.stringify(next)); } catch(e){}
+        return next;
+      });
+    };
+  }, [active]);
+
+  const showToast = (msg) => {
+    setToast(msg);
+    setTimeout(() => setToast(null), 2200);
+  };
+
+  useEffect(() => {
+    const COPYRIGHT_MSG = 'Intellectual Property of Prof. Shihmin Lo';
+    const onContext = (e) => {
+      const selection = window.getSelection().toString().trim();
+      const isImage = e.target.tagName === 'IMG' || !!e.target.closest('svg');
+      if (selection.length > 0) return;
+      if (isImage) { e.preventDefault(); showToast(COPYRIGHT_MSG); return; }
+      e.preventDefault(); showToast(COPYRIGHT_MSG);
+    };
+    const onKey = (e) => {
+      if (e.key === 'F12') { e.preventDefault(); showToast(COPYRIGHT_MSG); return; }
+      if (e.ctrlKey && e.key.toLowerCase() === 'u') { e.preventDefault(); showToast(COPYRIGHT_MSG); return; }
+      if (e.ctrlKey && e.shiftKey && ['i','j','c'].includes(e.key.toLowerCase())) { e.preventDefault(); showToast(COPYRIGHT_MSG); return; }
+    };
+    const onDrag = (e) => { if (e.target.tagName === 'IMG' || e.target.closest('svg')) e.preventDefault(); };
+    document.addEventListener('contextmenu', onContext);
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('dragstart', onDrag);
+    return () => {
+      document.removeEventListener('contextmenu', onContext);
+      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('dragstart', onDrag);
+    };
+  }, []);
+
+  const trackClick = () => {
+    setAnalytics(prev => {
+      const key = 'm' + active;
+      const cur = prev[key] || { time: 0, clicks: 0 };
+      const next = { ...prev, [key]: { ...cur, clicks: (cur.clicks||0) + 1 } };
+      try { localStorage.setItem('5p_analytics', JSON.stringify(next)); } catch(e){}
+      return next;
+    });
+  };
+
+  const handleCardRead = (moduleId, read, shown, total) => {
+    setAnalytics(prev => {
+      const key = 'm' + moduleId;
+      const cur = prev[key] || {};
+      const next = { ...prev, [key]: { ...cur, cardsRead: read, cardsTotal: total } };
+      try { localStorage.setItem('5p_analytics', JSON.stringify(next)); } catch(e){}
+      return next;
+    });
+  };
+
+  const handleQuizSubmit = (moduleId, correct, total, wrongQs, moduleName) => {
+    setAnalytics(prev => {
+      const key = 'm' + moduleId;
+      const cur = prev[key] || {};
+      const next = { ...prev, [key]: { ...cur, quizCorrect: correct, quizTotal: total, quizWrong: wrongQs, moduleName } };
+      try { localStorage.setItem('5p_analytics', JSON.stringify(next)); } catch(e){}
+      return next;
+    });
+  };
+
+  const speak = (text, voiceLang) => {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = voiceLang === 'zh' ? 'zh-TW' : 'en-GB';
+    const voices = window.speechSynthesis.getVoices();
+    const preferred = voiceLang === 'zh'
+      ? voices.find(v => v.name.includes('Yating') || v.lang === 'zh-TW')
+      : voices.find(v => v.name.includes('Daniel') || (v.lang === 'en-GB' && v.name.toLowerCase().includes('male')));
+    if (preferred) utter.voice = preferred;
+    utter.onend = () => setSpeaking(false);
+    utter.onerror = () => setSpeaking(false);
+    setSpeaking(true);
+    window.speechSynthesis.speak(utter);
+  };
+
+  const stopSpeak = () => { window.speechSynthesis.cancel(); setSpeaking(false); };
+
+  const moduleNavLabel = (i) => {
+    if (i === 0) return t.m0_nav;
+    if (i >= 1 && i <= NUM_LEARN) return t['m'+i+'_nav'];
+    if (i === IDX_LAB) return t.mlab_nav;
+    if (i === IDX_RES) return t.mres_nav;
+    if (i === IDX_ANA) return lang === 'zh' ? '8. 學習歷程分析' : '8. Learning Analytics';
+    return '';
+  };
+
+  const sanitizeId = (v) => v.replace(/[^0-9]/g, '').slice(0, 12);
+  const sanitizeName = (v) => v.replace(/[<>"'&\\]/g, '').slice(0, 50);
+
+  const updateStudentInfo = (key, val) => {
+    const next = { ...studentInfo, [key]: val };
+    setStudentInfo(next);
+    try { localStorage.setItem('5p_student', JSON.stringify(next)); } catch(e){}
+  };
+
+  const infoComplete = studentInfo.group && studentInfo.dept && studentInfo.id && studentInfo.nameEn && studentInfo.nameZh;
+
+  const exportCSV = () => {
+    if (!infoComplete) return;
+    const rows = [['Module','Time(s)','Clicks','CardsRead','CardsTotal','QuizCorrect','QuizTotal']];
+    for (let i = 0; i <= TOTAL - 1; i++) {
+      const a = analytics['m'+i] || {};
+      rows.push([moduleNavLabel(i), a.time||0, a.clicks||0, a.cardsRead||0, a.cardsTotal||0, a.quizCorrect||'', a.quizTotal||'']);
+    }
+    const meta = [
+      ['Group', studentInfo.group], ['Dept', studentInfo.dept], ['ID', studentInfo.id],
+      ['NameEN', studentInfo.nameEn], ['NameZH', studentInfo.nameZh], ['Date', new Date().toISOString()]
+    ];
+    let csv = '﻿';
+    meta.forEach(r => csv += r.join(',') + '\n');
+    csv += '\n';
+    rows.forEach(r => csv += r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',') + '\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `5p_learning_record_${studentInfo.id || 'student'}.csv`;
+    a.click(); URL.revokeObjectURL(url);
+  };
+
+  const clearHistory = () => {
+    if (!window.confirm(t.analytics_wp_clear_confirm)) return;
+    localStorage.removeItem('5p_analytics');
+    localStorage.removeItem('5p_journal');
+    setAnalytics({});
+  };
+
+  const SidebarContent = () => (
+    <nav className="space-y-1">
+      {[...Array(TOTAL).keys()].map(i => {
+        const Icon = MODULE_ICONS[i] || IconBookOpen;
+        return (
+          <button key={i} onClick={() => { setActive(i); setSidebarOpen(false); trackClick(); }}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors text-left ${
+              active === i ? 'bg-[#004030] text-white dark:bg-[#D8C3A5] dark:text-[#004030]' : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300'
+            }`}>
+            <Icon className="w-4 h-4 flex-shrink-0" />
+            <span>{moduleNavLabel(i)}</span>
+          </button>
+        );
+      })}
+    </nav>
+  );
+
+  const renderModuleContent = () => {
+    if (active === 0) return <ModuleZero t={t} lang={lang} onStart={() => { setActive(1); trackClick(); }} />;
+    if (active >= 1 && active <= NUM_LEARN) return (
+      <LearningModule idx={active} t={t} lang={lang} onCardRead={handleCardRead} onQuizSubmit={handleQuizSubmit} speak={speak} speaking={speaking} stopSpeak={stopSpeak} />
+    );
+    if (active === IDX_LAB) return <ModuleLab t={t} lang={lang} />;
+    if (active === IDX_RES) return <ModuleResources t={t} lang={lang} />;
+    if (active === IDX_ANA) return (
+      <ModuleAnalytics t={t} lang={lang} analytics={analytics} studentInfo={studentInfo} updateStudentInfo={updateStudentInfo}
+        sanitizeId={sanitizeId} sanitizeName={sanitizeName} infoComplete={infoComplete} exportCSV={exportCSV}
+        clearHistory={clearHistory} setActive={setActive} speak={speak} stopSpeak={stopSpeak} speaking={speaking} moduleNavLabel={moduleNavLabel} />
+    );
+    return null;
+  };
+
+  return (
+    <div className="min-h-screen bg-[#f4f4f4] dark:bg-[#121212] text-slate-800 dark:text-slate-100 font-sans selection:bg-[#004030] selection:text-white dark:selection:bg-[#D8C3A5] dark:selection:text-[#004030]">
+      {toast && (
+        <div className="fixed bottom-6 right-6 z-50 bg-[#004030] text-white text-sm px-4 py-2 rounded-lg shadow-lg animate-fade-in">{toast}</div>
+      )}
+
+      <header className="ui-decoration sticky top-0 z-40 bg-white/90 dark:bg-[#121212]/90 backdrop-blur border-b border-slate-200 dark:border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button onClick={() => setSidebarOpen(s => !s)} className="md:hidden p-2 -ml-2"><IconMenu className="w-5 h-5" /></button>
+            <span className="font-serif font-black text-lg text-[#004030] dark:text-[#D8C3A5] tracking-wider">{t.brand}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button onClick={() => setLang(l => l === 'zh' ? 'en' : 'zh')}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800">
+              <IconGlobe className="w-4 h-4" /> {lang === 'zh' ? 'EN' : '中文'}
+            </button>
+            <button onClick={() => setIsDark(d => !d)} className="p-2 rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800">
+              {isDark ? <IconSun className="w-4 h-4" /> : <IconMoon className="w-4 h-4" />}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-7xl mx-auto flex">
+        <aside className={`fixed md:sticky top-16 md:top-16 left-0 z-30 w-72 md:w-64 h-[calc(100vh-4rem)] bg-white dark:bg-[#121212] border-r border-slate-200 dark:border-slate-800 p-4 overflow-y-auto transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+          <SidebarContent />
+        </aside>
+        {sidebarOpen && <div onClick={() => setSidebarOpen(false)} className="fixed inset-0 bg-black/40 z-20 md:hidden" />}
+
+        <main className="flex-1 min-w-0 px-4 md:px-10 py-8 md:py-12">
+          <div key={active} className="animate-fade-in">
+            {renderModuleContent()}
+          </div>
+          <div className="flex items-center justify-between mt-12 pt-6 border-t border-slate-200 dark:border-slate-800">
+            <button onClick={() => active > 0 && (setActive(active-1), trackClick())} disabled={active === 0}
+              className="text-sm font-bold text-[#004030] dark:text-[#D8C3A5] disabled:opacity-30">{t.nav_prev}</button>
+            <button onClick={() => active < TOTAL-1 && (setActive(active+1), trackClick())} disabled={active === TOTAL-1}
+              className="text-sm font-bold text-[#004030] dark:text-[#D8C3A5] disabled:opacity-30">{t.nav_next}</button>
+          </div>
+
+          <footer className="ui-decoration mt-12 pt-6 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-400 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+            <p>{t.date} · {t.copyright}</p>
+            <p>{t.architect_label} <a href={t.architect_url} target="_blank" rel="noopener noreferrer" className="underline hover:text-[#004030] dark:hover:text-[#D8C3A5]">{t.architect_name}</a></p>
+          </footer>
+        </main>
+      </div>
+    </div>
+  );
+}
+
+const ModuleZero = ({ t, lang, onStart }) => (
+  <div>
+    <div onContextMenu={e => e.preventDefault()} className="rounded-2xl bg-gradient-to-br from-[#004030] to-[#0a5c45] dark:from-[#1a1a1a] dark:to-[#2a2a2a] text-white p-8 md:p-12 mb-10">
+      <p className="text-sm uppercase tracking-widest text-[#D8C3A5] mb-2">{t.subtitle}</p>
+      <h1 className="text-3xl md:text-5xl font-serif font-black mb-4 leading-tight">{t.title}</h1>
+    </div>
+    <p className="text-base leading-loose text-slate-600 dark:text-slate-300 mb-8 whitespace-pre-line">{t.m0_intro}</p>
+
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+      {t.m0_stats.map((s, i) => (
+        <div key={i} className="bg-white dark:bg-slate-800 rounded-xl p-4 text-center border border-slate-200 dark:border-slate-700">
+          <p className="text-2xl font-serif font-black text-[#004030] dark:text-[#D8C3A5]">{s.val}</p>
+          <p className="text-xs text-slate-500 mt-1">{s.label}</p>
+        </div>
+      ))}
+    </div>
+
+    <H2>{t.m0_why}</H2>
+    <p className="text-base leading-loose text-slate-600 dark:text-slate-300 mb-8">{t.m0_why_desc}</p>
+
+    <H2>{t.nav_modules}</H2>
+    <div className="space-y-3 mb-10">
+      {t.m0_modules.map((m, i) => (
+        <div key={i} className="flex items-start gap-4 p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+          <span className="font-serif font-black text-2xl text-[#D8C3A5] dark:text-[#004030] bg-[#004030] dark:bg-[#D8C3A5] w-12 h-12 flex items-center justify-center rounded-lg flex-shrink-0">{m.num}</span>
+          <div>
+            <p className="font-bold font-serif text-[#004030] dark:text-[#D8C3A5]">{m.title}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{m.desc}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+    <button onClick={onStart} className="px-6 py-3 bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] font-bold rounded-xl hover:opacity-90 transition-opacity">{t.m0_start}</button>
+  </div>
+);
+
+const LearningModule = ({ idx, t, lang, onCardRead, onQuizSubmit, speak, speaking, stopSpeak }) => {
+  const p = `m${idx}_`;
+  const paragraphs = [1,2,3,4].map(n => t[p+'p'+n]).filter(Boolean);
+  const fullText = [t[p+'overview'], ...paragraphs, t[p+'wrapup']].join(' ');
+
+  return (
+    <div>
+      <H2>{t[p+'title']}</H2>
+      <div className="flex items-center gap-2 mb-4">
+        <button onClick={() => speaking ? stopSpeak() : speak(fullText, lang)}
+          className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
+          {speaking ? <IconPause className="w-3.5 h-3.5" /> : <IconPlay className="w-3.5 h-3.5" />} {t.audio_read}
+        </button>
+      </div>
+
+      <p className="text-xs uppercase tracking-wider text-slate-400 mb-1">{t.overview_label}</p>
+      <p className="text-base leading-loose text-slate-600 dark:text-slate-300 mb-6">{t[p+'overview']}</p>
+
+      <p className="text-xs uppercase tracking-wider text-slate-400 mb-2">{t.highlights_label}</p>
+      <div className="flex flex-wrap gap-2 mb-8">
+        {t[p+'highlights'].map((h, i) => (
+          <span key={i} className="px-3 py-1 text-xs font-bold rounded-full bg-[#D8C3A5]/40 dark:bg-[#004030] text-[#004030] dark:text-[#D8C3A5]">{h}</span>
+        ))}
+      </div>
+
+      <p className="text-xs uppercase tracking-wider text-slate-400 mb-2">{t.deep_dive_label}</p>
+      <div className="space-y-4 mb-8">
+        {paragraphs.map((para, i) => (
+          <p key={i} className="text-base leading-loose text-slate-600 dark:text-slate-300">{para}</p>
+        ))}
+      </div>
+
+      <div className="bg-[#D8C3A5]/20 dark:bg-slate-800 border-l-4 border-[#004030] dark:border-[#D8C3A5] rounded-r-xl p-5 mb-4">
+        <p className="text-xs uppercase tracking-wider text-[#004030] dark:text-[#D8C3A5] font-bold mb-2">{t.wrapup_label}</p>
+        <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">{t[p+'wrapup']}</p>
+      </div>
+
+      <FlipCardDeck terms={t[p+'terms']} t={t} moduleId={idx} onCardRead={onCardRead} />
+      <ModuleQuiz questions={t[p+'q']} t={t} moduleId={idx} onQuizSubmit={onQuizSubmit} moduleName={t[p+'title']} />
+    </div>
+  );
+};
+
+const ModuleLab = ({ t, lang }) => {
+  const labComponents = [LabRadar, LabScenario, LabBalance, LabJournal];
+  return (
+    <div>
+      <H2>{t.mlab_title}</H2>
+      <p className="text-base leading-loose text-slate-600 dark:text-slate-300 mb-8">{t.mlab_desc}</p>
+      <div className="space-y-8">
+        {t.mlab_labs.map((lab, i) => {
+          const LabComp = labComponents[i];
+          return (
+            <div key={i} className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
+              <div className="flex items-center gap-2 mb-2">
+                <IconFlask className="w-5 h-5 text-[#004030] dark:text-[#D8C3A5]" />
+                <p className="font-bold font-serif text-[#004030] dark:text-[#D8C3A5]">{lab.title}</p>
+              </div>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mb-5">{lab.desc}</p>
+              {LabComp && <LabComp lang={lang} />}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+const ModuleResources = ({ t, lang }) => (
+  <div>
+    <H2>{t.mres_title}</H2>
+    <p className="text-base leading-loose text-slate-600 dark:text-slate-300 mb-8">{t.mres_desc}</p>
+    <div className="grid md:grid-cols-2 gap-4">
+      {RESOURCES[lang].map((r, i) => <LinkCard key={i} title={r.title} desc={r.desc} url={r.url} />)}
+    </div>
+  </div>
+);
+
+const ModuleAnalytics = ({ t, lang, analytics, studentInfo, updateStudentInfo, sanitizeId, sanitizeName, infoComplete, exportCSV, clearHistory, setActive, speak, stopSpeak, speaking, moduleNavLabel }) => {
+  let totalTime = 0, totalClicks = 0, quizCorrectSum = 0, quizTotalSum = 0, cardsReadSum = 0, cardsTotalSum = 0;
+  const weakModules = [];
+  for (let i = 0; i <= TOTAL - 1; i++) {
+    const a = analytics['m'+i] || {};
+    totalTime += a.time || 0;
+    totalClicks += a.clicks || 0;
+    if (a.quizTotal) {
+      quizCorrectSum += a.quizCorrect || 0;
+      quizTotalSum += a.quizTotal;
+      const acc = Math.round((a.quizCorrect / a.quizTotal) * 100);
+      if (acc < 75) weakModules.push({ idx: i, name: a.moduleName || moduleNavLabel(i), acc, wrong: a.quizWrong || [] });
+    }
+    if (a.cardsTotal) { cardsReadSum += a.cardsRead || 0; cardsTotalSum += a.cardsTotal; }
+  }
+  const overallAcc = quizTotalSum ? Math.round((quizCorrectSum / quizTotalSum) * 100) : null;
+  const cardUsage = cardsTotalSum ? Math.round((cardsReadSum / cardsTotalSum) * 100) : null;
+
+  const speakWeak = () => {
+    let text = t.analytics_wp_tts_intro + ' ';
+    if (weakModules.length === 0) text += t.analytics_wp_tts_allpass;
+    else weakModules.forEach(w => { text += t.analytics_wp_tts_module.replace('{name}', w.name).replace('{acc}', w.acc) + ' '; });
+    speak(text, lang);
+  };
+
+  return (
+    <div>
+      <H2>{t.analytics_title}</H2>
+      <p className="text-base leading-loose text-slate-600 dark:text-slate-300 mb-8">{t.analytics_desc}</p>
+
+      <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 mb-8">
+        <p className="font-bold font-serif text-[#004030] dark:text-[#D8C3A5] mb-4">{t.analytics_form_title}</p>
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-bold mb-1">{t.analytics_group}</label>
+            <select value={studentInfo.group} onChange={e => updateStudentInfo('group', e.target.value)}
+              className="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm">
+              <option value="">{t.analytics_group_select}</option>
+              {t.group_options.map(g => <option key={g} value={g}>{g}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-bold mb-1">{t.analytics_dept}</label>
+            <input value={studentInfo.dept} onChange={e => updateStudentInfo('dept', sanitizeName(e.target.value))} placeholder={t.analytics_dept_ph}
+              className="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm" />
+          </div>
+          <div>
+            <label className="block text-xs font-bold mb-1">{t.analytics_id}</label>
+            <input value={studentInfo.id} onChange={e => updateStudentInfo('id', sanitizeId(e.target.value))} placeholder={t.analytics_id_ph}
+              className="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm" />
+          </div>
+          <div>
+            <label className="block text-xs font-bold mb-1">{t.analytics_name_en}</label>
+            <input value={studentInfo.nameEn} onChange={e => updateStudentInfo('nameEn', sanitizeName(e.target.value))} placeholder={t.analytics_name_en_ph}
+              className="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm" />
+          </div>
+          <div>
+            <label className="block text-xs font-bold mb-1">{t.analytics_name_zh}</label>
+            <input value={studentInfo.nameZh} onChange={e => updateStudentInfo('nameZh', sanitizeName(e.target.value))} placeholder={t.analytics_name_zh_ph}
+              className="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm" />
+          </div>
+        </div>
+        <div className="mt-4 flex items-center gap-3 flex-wrap">
+          <button onClick={exportCSV} disabled={!infoComplete}
+            className="px-4 py-2 text-sm bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] font-bold rounded-lg disabled:opacity-40">{t.analytics_export_csv}</button>
+          {!infoComplete && <p className="text-xs text-slate-400">{t.analytics_fill_required}</p>}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 text-center">
+          <p className="text-xs text-slate-400 mb-1">{t.analytics_total_time}</p>
+          <p className="text-xl font-serif font-black text-[#004030] dark:text-[#D8C3A5]">{totalTime} {t.analytics_sec}</p>
+        </div>
+        <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 text-center">
+          <p className="text-xs text-slate-400 mb-1">{t.analytics_total_clicks}</p>
+          <p className="text-xl font-serif font-black text-[#004030] dark:text-[#D8C3A5]">{totalClicks} {t.analytics_times}</p>
+        </div>
+        <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 text-center">
+          <p className="text-xs text-slate-400 mb-1">{t.analytics_overall_acc}</p>
+          <p className="text-xl font-serif font-black text-[#004030] dark:text-[#D8C3A5]">{overallAcc !== null ? overallAcc + '%' : t.analytics_no_data}</p>
+        </div>
+      </div>
+
+      <div className="overflow-x-auto mb-8">
+        <table className="w-full text-sm border-collapse">
+          <thead>
+            <tr className="text-left text-xs uppercase tracking-wider text-slate-400 border-b border-slate-200 dark:border-slate-700">
+              <th className="py-2 pr-4">{t.analytics_module}</th>
+              <th className="py-2 pr-4">{t.analytics_time}</th>
+              <th className="py-2 pr-4">{t.analytics_clicks}</th>
+              <th className="py-2 pr-4">{t.analytics_cards_read_total}</th>
+              <th className="py-2 pr-4">{t.analytics_correct_ans_total}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[...Array(TOTAL).keys()].map(i => {
+              const a = analytics['m'+i] || {};
+              return (
+                <tr key={i} className="border-b border-slate-100 dark:border-slate-800">
+                  <td className="py-2 pr-4 font-medium">{moduleNavLabel(i)}</td>
+                  <td className="py-2 pr-4">{a.time || 0} {t.analytics_sec}</td>
+                  <td className="py-2 pr-4">{a.clicks || 0}</td>
+                  <td className="py-2 pr-4">{a.cardsTotal ? `${a.cardsRead||0} / ${a.cardsTotal}` : '—'}</td>
+                  <td className="py-2 pr-4">{a.quizTotal ? `${a.quizCorrect||0} / ${a.quizTotal}` : t.analytics_no_data}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
+        <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <p className="font-bold font-serif text-[#004030] dark:text-[#D8C3A5]">{t.analytics_wp_title}</p>
+          <button onClick={() => speaking ? stopSpeak() : speakWeak()}
+            className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
+            {speaking ? <IconPause className="w-3.5 h-3.5" /> : <IconPlay className="w-3.5 h-3.5" />} {t.audio_read}
+          </button>
+        </div>
+        {weakModules.length === 0 ? (
+          <p className="text-sm text-green-600 dark:text-green-400">{t.analytics_wp_allpass}</p>
+        ) : (
+          <div className="space-y-4">
+            {weakModules.map(w => (
+              <div key={w.idx} className="border-l-4 border-amber-400 pl-4">
+                <p className="font-bold text-sm">{w.name} — {w.acc}%</p>
+                {w.wrong.length > 0 && (
+                  <p className="text-xs text-slate-500 mt-1">{t.analytics_wp_incorrect} {w.wrong.join(' / ')}</p>
+                )}
+                <button onClick={() => setActive(w.idx)} className="text-xs font-bold text-[#004030] dark:text-[#D8C3A5] underline mt-1">{t.analytics_wp_goto}</button>
+              </div>
+            ))}
+          </div>
+        )}
+        <div className="flex items-center justify-between mt-6 pt-4 border-t border-slate-100 dark:border-slate-700">
+          <p className="text-xs text-slate-400">{t.analytics_wp_saved}</p>
+          <button onClick={clearHistory} className="text-xs font-bold text-red-500 hover:underline">{t.analytics_wp_clear}</button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+  </script>
 </body>
 </html>
