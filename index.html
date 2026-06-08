@@ -97,7 +97,7 @@ const IconClock = (p) => <Icon {...p}><circle cx="12" cy="12" r="10"/><polyline 
 
 const dict = {
   zh: {
-    brand: "5PAIRS", title: "人生與職涯的五個 P 原則",
+    brand: "5PAIRS", title: "人生與職涯的5對 P 原則",
     subtitle: "給畢業生的溫馨指引 — 駱世民教授",
     nav_modules: "單元目錄", nav_prev: "← 上一單元", nav_next: "下一單元 →", nav_home: "首頁",
     key_terms: "關鍵專有名詞", flip_prompt: "點擊翻轉",
@@ -129,13 +129,14 @@ const dict = {
     analytics_card_usage: "學習卡使用率",
     analytics_module: "模組", analytics_time: "停留時間",
     analytics_clicks: "點擊次數", analytics_acc: "答對率",
-    analytics_correct_ans_total: "答對 / 已填答 / 總題數",
-    analytics_cards_read_total: "已讀 / 總卡數",
+    analytics_correct_ans_total: "答對 / 已填答 / 總計",
+    analytics_cards_read_total: "已讀 / 已顯示 / 總計",
+    analytics_not_viewed: "尚未點閱",
     analytics_no_data: "尚未測驗", analytics_sec: "秒", analytics_times: "次",
     analytics_progress_title: "整體學習進度",
     analytics_progress_visited: "已瀏覽", analytics_progress_not_visited: "未瀏覽",
     analytics_progress_quiz_done: "已測驗",
-    analytics_wp_title: "弱點分析與複習建議",
+    analytics_wp_title: "弱點分析與複習建議（針對已完成模組）",
     analytics_wp_incorrect: "答錯題目：",
     analytics_wp_goto: "→ 前往複習此模組",
     analytics_wp_allpass: "所有已測驗模組答對率均達 75% 以上，表現優異！",
@@ -147,12 +148,12 @@ const dict = {
     analytics_wp_tts_allpass: "恭喜！所有已測驗模組答對率均達 75% 以上。",
 
     m0_nav: "0. 執行概要",
-    m0_title: "人生與職涯的五個 P 原則",
-    m0_intro: "各位畢業生、親愛的家長、親友，還有各位師長們，大家好，恭喜你們！今天是個開心的日子，也是個人生的重要里程碑。在你們準備離開校園、迎向未來的時候，駱世民教授想分享一個簡單的架構——「人生與職涯的五個 P 原則」。這套架構並不是要給你一份標準答案，而是希望成為一面鏡子，讓你在往後的日子裡，無論是面對求職的徬徨、職場的挑戰，或是人生階段的轉換，都能停下來想一想：我現在的選擇，呼應了哪些原則？還缺了哪一塊？這五對原則環環相扣——熱情與意義讓工作有方向，專業與進步讓你站得住腳，回報與繁榮讓生活有保障，同儕與夥伴讓旅途不孤單，耐心與堅持則是撐過低潮的韌性。本課程將逐一帶你認識這五對原則的內涵、彼此的關聯，以及如何在日常生活中具體實踐。希望這份指引，能陪伴你走過從校園到社會的轉折，也能在未來遇到迷惘時，成為你重新定錨的依據。",
-    m0_diagram_alt: "五對 P 原則環繞中心構面的關係示意圖",
+    m0_title: "人生與職涯的5對 P 原則",
+    m0_intro: "各位畢業生、親愛的家長、親友，還有各位師長們，大家好，恭喜你們！今天是個開心的日子，也是個人生的重要里程碑。在你們準備離開校園、迎向未來的時候，駱世民教授想分享一個簡單的架構——「人生與職涯的5對 P 原則」。這套架構並不是要給你一份標準答案，而是希望成為一面鏡子，讓你在往後的日子裡，無論是面對求職的徬徨、職場的挑戰，或是人生階段的轉換，都能停下來想一想：我現在的選擇，呼應了哪些原則？還缺了哪一塊？這5對原則環環相扣——熱情與意義讓工作有方向，專業與進步讓你站得住腳，回報與繁榮讓生活有保障，同儕與夥伴讓旅途不孤單，耐心與堅持則是撐過低潮的韌性。本課程將逐一帶你認識這5對原則的內涵、彼此的關聯，以及如何在日常生活中具體實踐。希望這份指引，能陪伴你走過從校園到社會的轉折，也能在未來遇到迷惘時，成為你重新定錨的依據。",
+    m0_diagram_alt: "5對 P 原則環繞中心構面的關係示意圖",
     m0_diagram_hint: "點擊圖中任一節點，可直接跳轉至對應單元",
     m0_why: "為什麼這套原則值得花時間理解？",
-    m0_why_desc: "畢業是人生的分水嶺，許多人在踏入職場初期容易只看眼前的薪資與職稱，卻忽略了長期的自我實現與生活平衡。這五對 P 原則提供一個整體性的檢視角度，幫助你在做生涯決策時，同時兼顧內在動機、專業成長、現實生活、人際支持與心理韌性，避免「顧此失彼」，讓你的職涯發展走得既長遠又踏實。",
+    m0_why_desc: "畢業是人生的分水嶺，許多人在踏入職場初期容易只看眼前的薪資與職稱，卻忽略了長期的自我實現與生活平衡。這5對 P 原則提供一個整體性的檢視角度，幫助你在做生涯決策時，同時兼顧內在動機、專業成長、現實生活、人際支持與心理韌性，避免「顧此失彼」，讓你的職涯發展走得既長遠又踏實。",
     m0_modules: [
       { num: "01", title: "熱情與意義 Passion & Purpose", desc: "找到讓你願意起床的理由，看見工作背後的價值。" },
       { num: "02", title: "專業與進步 Profession & Progress", desc: "透過終身學習培養知識、技能與態度，持續精進自己。" },
@@ -241,7 +242,7 @@ const dict = {
     m4_overview: "本單元探討職場中「同儕」支持網絡的建立，以及生命中「伴侶」關係的珍貴。良好的人際連結，無論在職場或私人生活中，都是支撐我們走過高低起伏的重要力量。",
     m4_highlights: ["支持網絡", "職場夥伴", "親密關係", "人際資本"],
     m4_p1: "在職場上，多結交互相支持的同儕——像是同事、前輩，或是在低潮時拉你一把的朋友。這些關係不一定要轟轟烈烈，有時候只是一句鼓勵的話、一次經驗的分享，就能在關鍵時刻帶來很大的力量。",
-    m4_p2: "不過更重要的是，駱教授特別強調生活中的「伴侶」(Partners)。好好珍惜那個跟你有著深厚情感與親密關係的人。能找到一個真正的人生伴侶，一起規劃未來、甚至共組家庭，是一件非常美好的事。",
+    m4_p2: "同時可能更重要的是，生活中的「伴侶」(Partners)。好好珍惜那個跟你有著深厚情感與親密關係的人。能找到一個真正的人生伴侶，一起規劃未來、甚至共組家庭，是一件非常美好的事。",
     m4_p3: "請用心經營這段關係，因為在遇到風雨時，他們會是你最穩固的靠山。無論是職場上的夥伴關係，或是私人生活中的伴侶關係，都需要持續的投入、傾聽與相互理解，才能在時間的累積下越來越深厚。",
     m4_p4: "值得一提的是，建立連結是一個雙向的歷程：在期待他人支持自己的同時，我們也應該練習成為別人生命中那個願意伸出援手的人。這種互相成就的關係網絡，正是「同儕與夥伴」這項原則所要傳達的核心精神。",
     m4_wrapup: "同儕與夥伴提醒我們：人不是孤島，無論是在職場上互相扶持的同事，或是生活中相依相伴的人生伴侶，這些關係都是我們前進路上最重要的支柱。用心經營，將為你的人生增添更多溫度與韌性。",
@@ -267,7 +268,7 @@ const dict = {
     m5_p2: "這時，耐心會讓你有喘息的空間，而堅持會給你繼續走下去的意志力。耐心並非消極等待，而是一種在不確定中仍願意持續投入、相信過程價值的態度；堅持則是把目標拆解成一個個小步驟，逐步累積、逐步前進的行動力。",
     m5_p3: "面對挑戰時的韌性，才是讓你走得長遠的關鍵。心理韌性 (Resilience) 並非與生俱來、固定不變的特質，而是可以透過經驗、反思與支持系統逐漸培養起來的能力。每一次從挫折中重新站起，都是在為這份韌性增添厚度。",
     m5_p4: "就一步一步、持續地往前走吧。當我們把焦點從「結果是否完美」轉移到「今天是否比昨天前進了一點」，過程本身便會變得更可承受，也更值得珍惜。這種視角的轉換，正是耐心與堅持得以長期維持的關鍵。",
-    m5_wrapup: "耐心與堅持，是貫穿整個五對 P 原則的底層韌性。它提醒我們：成長與成就很少是一蹴可幾的，挫折與等待是過程的一部分。只要願意持續投入、一步步前進，時間終將見證累積的力量。",
+    m5_wrapup: "耐心與堅持，是貫穿整個5對 P 原則的底層韌性。它提醒我們：成長與成就很少是一蹴可幾的，挫折與等待是過程的一部分。只要願意持續投入、一步步前進，時間終將見證累積的力量。",
     m5_terms: [
       { front: "Resilience 心理韌性", back: "個人在面對逆境、挫折或壓力時，能夠調適、恢復並持續成長的心理能力。" },
       { front: "Delayed Gratification 延遲滿足", back: "為了長期更有價值的目標，願意暫緩當下立即享樂或回報的自我調節能力。" },
@@ -284,10 +285,10 @@ const dict = {
     ],
 
     mlab_nav: "6. 互動實驗室", mlab_title: "互動實驗室",
-    mlab_desc: "透過下列互動活動，將五對 P 原則應用到自己的生活情境中，進行自我檢視與反思練習。",
+    mlab_desc: "透過下列互動活動，將5對 P 原則應用到自己的生活情境中，進行自我檢視與反思練習。",
     mlab_labs: [
-      { title: "五項原則自我評分雷達", desc: "為自己在五對 P 原則上的現況評分，視覺化呈現你目前的優勢與待加強面向。" },
-      { title: "職涯選擇情境模擬", desc: "面對兩個虛構職缺，依據五對 P 原則的考量權重做出選擇，並檢視你的決策傾向。" },
+      { title: "5項原則自我評分雷達", desc: "為自己在5對 P 原則上的現況評分，視覺化呈現你目前的優勢與待加強面向。" },
+      { title: "職涯選擇情境模擬", desc: "面對兩個虛構職缺，依據5對 P 原則的考量權重做出選擇，並檢視你的決策傾向。" },
       { title: "熱情與報酬平衡計算器", desc: "輸入你對熱情、意義與報酬的相對重視程度，模擬呈現可能的職涯滿意度落點。" },
       { title: "韌性小日記", desc: "記錄一次最近遇到的小挫折與你的因應方式，練習用「耐心與堅持」的角度重新詮釋它。" }
     ],
@@ -299,7 +300,8 @@ const dict = {
     copyright: "For Educational Use Only",
     architect_label: "Architect:",
     architect_name: "Prof. Shihmin Lo",
-    architect_url: "https://www.ibs.ncnu.edu.tw/index.php/faculty/tenured-professor/299-smlo"
+    architect_url: "https://www.ibs.ncnu.edu.tw/index.php/faculty/tenured-professor/299-smlo",
+    back_to_top: "回到頁面頂端"
   },
   en: {
     brand: "5PAIRS", title: "5 Pairs of P-Principles for Life and Career",
@@ -335,12 +337,13 @@ const dict = {
     analytics_module: "Module", analytics_time: "Time Spent",
     analytics_clicks: "Clicks", analytics_acc: "Accuracy",
     analytics_correct_ans_total: "Correct / Answered / Total",
-    analytics_cards_read_total: "Read / Total",
+    analytics_cards_read_total: "Read / Shown / Total",
+    analytics_not_viewed: "Not yet viewed",
     analytics_no_data: "Not yet attempted", analytics_sec: "sec", analytics_times: "times",
     analytics_progress_title: "Overall Progress",
     analytics_progress_visited: "Visited", analytics_progress_not_visited: "Not Visited",
     analytics_progress_quiz_done: "Quiz Done",
-    analytics_wp_title: "Weak Points & Review Suggestions",
+    analytics_wp_title: "Weak Points & Review Suggestions (Completed Modules Only)",
     analytics_wp_incorrect: "Incorrect Questions:",
     analytics_wp_goto: "→ Go review this module",
     analytics_wp_allpass: "All attempted modules scored 75% or above. Excellent work!",
@@ -446,7 +449,7 @@ const dict = {
     m4_overview: "This module explores building a supportive network of peers at work, and cherishing the partner relationships in life. Strong human connections—whether at work or in personal life—are vital forces that help us through life's ups and downs.",
     m4_highlights: ["Support Network", "Workplace Allies", "Intimate Relationships", "Social Capital"],
     m4_p1: "At work, connect with your peers—your colleagues, mentors, and friends who support you. These relationships don't have to be dramatic; sometimes a single word of encouragement or a shared experience can make a huge difference at a critical moment.",
-    m4_p2: "But more importantly, Prof. Lo especially emphasizes the \"Partners\" in your personal life. Cherish the person you share a deep, intimate relationship with. Finding a true life partner to build a future—and perhaps a family—with is something truly special.",
+    m4_p2: "But perhaps even more important is the \"Partner\" in your personal life. Cherish the person you share a deep, intimate relationship with. Finding a true life partner to build a future together—and perhaps even a family—is something truly wonderful.",
     m4_p3: "Nurture that relationship, because they will be your strongest support when things get tough. Whether it's workplace partnerships or intimate relationships in personal life, both require continuous investment, listening, and mutual understanding to deepen over time.",
     m4_p4: "It's worth noting that building connections is a two-way process: while hoping others will support us, we should also practice being someone willing to lend a hand in others' lives. This mutually empowering network of relationships is the core spirit that \"Peers and Partners\" aims to convey.",
     m4_wrapup: "Peers and Partners remind us that no one is an island. Whether it's colleagues who support each other at work, or a life partner who walks alongside you, these relationships are among the most important pillars on your journey forward. Investing in them with care will add warmth and resilience to your life.",
@@ -459,7 +462,7 @@ const dict = {
     ],
     m4_q: [
       { q: "How does the talk suggest interacting with peers at work?", opts: ["Keep your distance to avoid getting too close","Build supportive relationships with colleagues, mentors, and friends","Only associate with people of higher rank than yourself","Treat every colleague as a competitor"], ans: _A1, exp: "Building mutually supportive peer relationships provides crucial support along the career journey." },
-      { q: "Which relationship does Prof. Lo especially emphasize in personal life?", opts: ["Interactions with celebrities or influencers","The relationship with a partner who shares deep emotional intimacy","Casual social contact with strangers","Only work-related collaborative relationships"], ans: _A1, exp: "The partner relationship is highlighted as an especially precious and important source of support." },
+      { q: "Which relationship is especially emphasized in personal life?", opts: ["Interactions with celebrities or influencers","The relationship with a partner who shares deep emotional intimacy","Casual social contact with strangers","Only work-related collaborative relationships"], ans: _A1, exp: "The partner relationship is highlighted as an especially precious and important source of support." },
       { q: "According to this module, what role can good relationships play in difficult times?", opts: ["They add extra burden and stress","They serve as a stable source of support to lean on","They have nothing to do with facing difficulties","They only make problems more complicated"], ans: _A1, exp: "Deep relationships provide a stable source of support during turbulent times." },
       { q: "What does \"Reciprocity\" refer to in relationships?", opts: ["Giving endlessly without expecting anything in return","The dynamic process of mutual giving and receiving","Only accepting help while never offering any in return","A relationship where only one side needs to put in effort"], ans: _A1, exp: "Reciprocity emphasizes two-way giving and receiving as the basis of sustaining relationships." },
       { q: "What is the main message behind \"building connections is a two-way process\"?", opts: ["You only need to wait for others to be kind to you first","While hoping for others' support, also practice becoming a supporter for others","Relationships require no proactive effort at all","Only one-sided giving counts as true friendship"], ans: _A1, exp: "A two-way process emphasizes mutual empowerment—the core spirit of peers and partners." }
@@ -504,26 +507,42 @@ const dict = {
     copyright: "For Educational Use Only",
     architect_label: "Architect:",
     architect_name: "Prof. Shihmin Lo",
-    architect_url: "https://www.ibs.ncnu.edu.tw/index.php/faculty/tenured-professor/299-smlo"
+    architect_url: "https://www.ibs.ncnu.edu.tw/index.php/faculty/tenured-professor/299-smlo",
+    back_to_top: "Back to Top"
   }
 };
 
-const FlipCardDeck = ({ terms, t, moduleId, onCardRead, onTrackClick }) => {
-  const [groupIdx, setGroupIdx] = useState(0);
+const FlipCardDeck = ({ terms, t, moduleId, onCardRead, onTrackClick, saved, onProgress }) => {
+  const savedRead = (saved && saved.cardsReadIdx) || [];
+  const savedShown = (saved && saved.cardsShownIdx) || [];
+  const savedGroupIdx = (saved && saved.cardsGroupIdx) || 0;
+  const [groupIdx, setGroupIdx] = useState(savedGroupIdx);
   const [flipped, setFlipped] = useState({});
-  const [readSet, setReadSet] = useState(new Set());
-  const [shownSet, setShownSet] = useState(new Set());
-  const [shuffledOrder] = useState(() => [...Array(terms.length).keys()].sort(() => Math.random() - 0.5));
+  const [readSet, setReadSet] = useState(new Set(savedRead));
+  const [shownSet, setShownSet] = useState(new Set(savedShown));
+  const [shuffledOrder] = useState(() => (saved && saved.cardsOrder) || [...Array(terms.length).keys()].sort(() => Math.random() - 0.5));
   const groupSize = 2;
   const totalGroups = Math.ceil(terms.length / groupSize);
   const startIdx = groupIdx * groupSize;
   const currentCardIndices = shuffledOrder.slice(startIdx, startIdx + groupSize);
 
+  const persist = (read, shown, gIdx) => {
+    if (onProgress) onProgress(moduleId, {
+      cardsReadIdx: [...read], cardsShownIdx: [...shown], cardsGroupIdx: gIdx, cardsOrder: shuffledOrder,
+      cardsRead: read.size, cardsShown: shown.size, cardsTotal: terms.length
+    });
+  };
+
   useEffect(() => {
     const newShown = new Set(shownSet);
     currentCardIndices.forEach(idx => newShown.add(idx));
-    if (newShown.size !== shownSet.size) setShownSet(newShown);
+    if (newShown.size !== shownSet.size) { setShownSet(newShown); persist(readSet, newShown, groupIdx); }
   }, [groupIdx]);
+
+  // Initial mount: ensure saved totals are reflected (e.g., terms.length unchanged) without overwriting on every render
+  useEffect(() => {
+    if (onCardRead) onCardRead(moduleId, readSet.size, shownSet.size, terms.length);
+  }, []);
 
   const handleFlip = (origIdx) => {
     if (onTrackClick) onTrackClick();
@@ -531,7 +550,18 @@ const FlipCardDeck = ({ terms, t, moduleId, onCardRead, onTrackClick }) => {
     if (!readSet.has(origIdx)) {
       const newRead = new Set(readSet); newRead.add(origIdx); setReadSet(newRead);
       if (onCardRead) onCardRead(moduleId, newRead.size, shownSet.size, terms.length);
+      persist(newRead, shownSet, groupIdx);
     }
+  };
+
+  const handleRetry = () => {
+    setGroupIdx(0); setFlipped({}); setReadSet(new Set()); setShownSet(new Set());
+    if (onCardRead) onCardRead(moduleId, 0, 0, terms.length);
+    if (onProgress) onProgress(moduleId, { cardsReadIdx: [], cardsShownIdx: [], cardsGroupIdx: 0, cardsOrder: shuffledOrder, cardsRead: 0, cardsShown: 0, cardsTotal: terms.length });
+  };
+
+  const handleNext = () => {
+    if (groupIdx < totalGroups - 1) { const ni = groupIdx + 1; setGroupIdx(ni); persist(readSet, shownSet, ni); }
   };
 
   const statusText = t.flip_status.replace('{read}', readSet.size).replace('{shown}', shownSet.size).replace('{total}', terms.length);
@@ -559,23 +589,26 @@ const FlipCardDeck = ({ terms, t, moduleId, onCardRead, onTrackClick }) => {
         })}
       </div>
       <div className="flex items-center gap-3 mt-4">
-        <button onClick={() => { setGroupIdx(0); setFlipped({}); }}
+        <button onClick={handleRetry}
           className="px-4 py-2 text-sm border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">{t.flip_retry}</button>
-        <button onClick={() => groupIdx < totalGroups-1 && setGroupIdx(groupIdx+1)} disabled={groupIdx >= totalGroups-1}
+        <button onClick={handleNext} disabled={groupIdx >= totalGroups-1}
           className="px-4 py-2 text-sm bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] font-bold rounded-lg disabled:opacity-40">{t.flip_next}</button>
       </div>
     </div>
   );
 };
 
-const ModuleQuiz = ({ questions, t, moduleId, onQuizSubmit, moduleName, onTrackClick }) => {
-  const [selected, setSelected] = useState({});
-  const [submitted, setSubmitted] = useState({});
-  const [groupIdx, setGroupIdx] = useState(0);
+const ModuleQuiz = ({ questions, t, moduleId, onQuizSubmit, moduleName, onTrackClick, saved, onProgress }) => {
+  const savedSelected = (saved && saved.quizSelected) || {};
+  const savedSubmitted = (saved && saved.quizSubmitted) || {};
+  const savedGroupIdx = (saved && saved.quizGroupIdx) || 0;
+  const [selected, setSelected] = useState(savedSelected);
+  const [submitted, setSubmitted] = useState(savedSubmitted);
+  const [groupIdx, setGroupIdx] = useState(savedGroupIdx);
   const groupSize = 2;
-  const [quizIndices] = useState(() => [...Array(questions.length).keys()].sort(() => Math.random() - 0.5));
+  const [quizIndices] = useState(() => (saved && saved.quizIndices) || [...Array(questions.length).keys()].sort(() => Math.random() - 0.5));
   const totalGroups = Math.ceil(quizIndices.length / groupSize);
-  const [shuffledMaps] = useState(() => quizIndices.map(qIdx => {
+  const [shuffledMaps] = useState(() => (saved && saved.quizShuffledMaps) || quizIndices.map(qIdx => {
     const n = questions[qIdx].opts.length;
     return [...Array(n).keys()].sort(() => Math.random() - 0.5);
   }));
@@ -593,11 +626,30 @@ const ModuleQuiz = ({ questions, t, moduleId, onQuizSubmit, moduleName, onTrackC
   const currentStart = groupIdx * groupSize;
   const currentIndices = quizIndices.slice(currentStart, currentStart + groupSize);
 
+  const persist = (sel, sub, gIdx) => {
+    if (onProgress) onProgress(moduleId, {
+      quizSelected: sel, quizSubmitted: sub, quizGroupIdx: gIdx,
+      quizIndices, quizShuffledMaps: shuffledMaps,
+      quizAnswered: Object.keys(sel).length, quizCorrectLive: (() => {
+        let c = 0;
+        quizIndices.forEach((qIdx, qi) => { if (sel[qi] !== undefined && shuffledMaps[qi][sel[qi]] === _d(questions[qIdx].ans)) c++; });
+        return c;
+      })(),
+      quizTotal: quizIndices.length
+    });
+  };
+
+  // Initial mount sync so M8 reflects saved progress immediately
+  useEffect(() => {
+    persist(selected, submitted, groupIdx);
+  }, []);
+
   const handleGroupSubmit = () => {
     const allDone = currentIndices.every((_, i) => selected[currentStart + i] !== undefined);
     if (!allDone) return;
     const newSubmitted = { ...submitted, [groupIdx]: true };
     setSubmitted(newSubmitted);
+    persist(selected, newSubmitted, groupIdx);
     if (Object.keys(newSubmitted).length === totalGroups) {
       const wrongQs = [];
       let correct = 0;
@@ -608,6 +660,27 @@ const ModuleQuiz = ({ questions, t, moduleId, onQuizSubmit, moduleName, onTrackC
       });
       onQuizSubmit(moduleId, correct, quizIndices.length, wrongQs, moduleName);
     }
+  };
+
+  const handleSelect = (qi, dIdx) => {
+    const ns = { ...selected, [qi]: dIdx };
+    setSelected(ns);
+    if (onTrackClick) onTrackClick();
+    persist(ns, submitted, groupIdx);
+  };
+
+  const handleNext = () => {
+    if (groupIdx < totalGroups - 1) { const ni = groupIdx + 1; setGroupIdx(ni); persist(selected, submitted, ni); }
+  };
+
+  const handleRetry = () => {
+    setSelected({}); setSubmitted({}); setGroupIdx(0);
+    if (onProgress) onProgress(moduleId, {
+      quizSelected: {}, quizSubmitted: {}, quizGroupIdx: 0,
+      quizIndices, quizShuffledMaps: shuffledMaps,
+      quizAnswered: 0, quizCorrectLive: 0, quizTotal: quizIndices.length,
+      quizCorrect: undefined, quizWrong: undefined
+    });
   };
 
   return (
@@ -627,7 +700,7 @@ const ModuleQuiz = ({ questions, t, moduleId, onQuizSubmit, moduleName, onTrackC
                 const isCorrect = origIdx === _d(q.ans);
                 const isSel = selected[qi] === dIdx;
                 return (
-                  <button key={dIdx} onClick={() => { if (!isGrpSub) { setSelected(s => ({...s, [qi]: dIdx})); if (onTrackClick) onTrackClick(); } }}
+                  <button key={dIdx} onClick={() => { if (!isGrpSub) handleSelect(qi, dIdx); }}
                     className={`w-full text-left px-4 py-3 rounded-lg border transition-all text-sm ${
                       isGrpSub
                         ? isCorrect ? 'bg-green-100 border-green-500 dark:bg-green-900/30'
@@ -642,12 +715,12 @@ const ModuleQuiz = ({ questions, t, moduleId, onQuizSubmit, moduleName, onTrackC
         );
       })}
       <div className="flex items-center gap-3 mt-4">
-        <button onClick={() => { setSelected({}); setSubmitted({}); setGroupIdx(0); }}
+        <button onClick={handleRetry}
           className="px-4 py-2 text-sm border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">{t.quiz_retry}</button>
         {!submitted[groupIdx] ? (
           <button onClick={handleGroupSubmit} className="px-4 py-2 text-sm bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] font-bold rounded-lg">{t.submit}</button>
         ) : (
-          <button onClick={() => groupIdx < totalGroups-1 && setGroupIdx(groupIdx+1)} disabled={groupIdx >= totalGroups-1}
+          <button onClick={handleNext} disabled={groupIdx >= totalGroups-1}
             className="px-4 py-2 text-sm bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] font-bold rounded-lg disabled:opacity-40">{t.quiz_next}</button>
         )}
       </div>
@@ -849,12 +922,18 @@ function App() {
   const [lang, setLang] = useState('en');
   const [isDark, setIsDark] = useState(true);
   const [active, setActive] = useState(0);
+  const goTo = (i) => {
+    setActive(i);
+    if (i === IDX_ANA) setAnalyticsVisitKey(k => k + 1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [speaking, setSpeaking] = useState(false);
   const [paused, setPaused] = useState(false);
   const [speakingSource, setSpeakingSource] = useState(null);
   const [toast, setToast] = useState(null);
   const [analytics, setAnalytics] = useState({});
+  const [analyticsVisitKey, setAnalyticsVisitKey] = useState(0);
   const [studentInfo, setStudentInfo] = useState({ group: '', dept: '', id: '', nameEn: '', nameZh: '' });
   const visitStart = useRef(Date.now());
   const t = dict[lang];
@@ -946,6 +1025,17 @@ function App() {
     });
   };
 
+  // Generic progress merge for FlipCardDeck / ModuleQuiz persistence (read/shown/answered states)
+  const saveModuleProgress = (moduleId, patch) => {
+    setAnalytics(prev => {
+      const key = 'm' + moduleId;
+      const cur = prev[key] || {};
+      const next = { ...prev, [key]: { ...cur, ...patch } };
+      try { localStorage.setItem('5p_analytics', JSON.stringify(next)); } catch(e){}
+      return next;
+    });
+  };
+
   const speak = (text, voiceLang, source) => {
     if (!('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
@@ -979,8 +1069,16 @@ function App() {
   };
 
   const headerSpeechText = () => {
-    if (active === 0) return t.m0_title + '. ' + t.m0_intro;
-    if (active >= 1 && active <= NUM_LEARN) { const p = 'm'+active+'_'; return t[p+'title'] + '. ' + t[p+'overview']; }
+    if (active === 0) {
+      const modulesText = t.m0_modules.map(m => m.title + '. ' + m.desc).join(' ');
+      return [t.m0_title, t.m0_intro, modulesText].join(' ');
+    }
+    if (active >= 1 && active <= NUM_LEARN) {
+      const p = 'm'+active+'_';
+      const paragraphs = [1,2,3,4].map(n => t[p+'p'+n]).filter(Boolean).join(' ');
+      const highlights = (t[p+'highlights'] || []).join('. ');
+      return [t[p+'title'], t[p+'overview'], highlights, paragraphs, t[p+'wrapup']].join(' ');
+    }
     if (active === IDX_LAB) return t.mlab_title + '. ' + t.mlab_desc;
     if (active === IDX_RES) return t.mres_title + '. ' + t.mres_desc;
     if (active === IDX_ANA) return t.analytics_title + '. ' + t.analytics_desc;
@@ -1009,23 +1107,51 @@ function App() {
 
   const exportCSV = () => {
     if (!infoComplete) return;
-    const rows = [['Module','Time(s)','Clicks','CardsRead','CardsTotal','QuizCorrect','QuizTotal']];
+    // Header labels, field names, and filename all follow the UI language active at export time
+    const isZh = lang === 'zh';
+    const colHeaders = isZh
+      ? ['模組','停留時間(秒)','點擊次數','已讀','已顯示','卡片總計','答對','已填答','測驗總計']
+      : ['Module','Time(s)','Clicks','CardsRead','CardsShown','CardsTotal','QuizCorrect','QuizAnswered','QuizTotal'];
+    const metaLabels = isZh
+      ? ['組別','系級','學號','英文姓名','中文姓名','匯出時間']
+      : ['Group','Dept','ID','NameEN','NameZH','ExportDate'];
+    const naLabel = isZh ? '不適用' : 'N/A';
+
+    // Mirror the live values shown in the M8 table at the moment of export (read/shown/total, correct/answered/total)
+    const rows = [colHeaders];
     for (let i = 0; i <= TOTAL - 1; i++) {
       const a = analytics['m'+i] || {};
-      rows.push([moduleNavLabel(i), a.time||0, a.clicks||0, a.cardsRead||0, a.cardsTotal||0, a.quizCorrect||'', a.quizTotal||'']);
+      const isLearn = (i >= 1 && i <= NUM_LEARN);
+      const cardsRead = isLearn ? (a.cardsRead || 0) : naLabel;
+      const cardsShown = isLearn ? (a.cardsShown || 0) : naLabel;
+      const cardsTotal = isLearn ? (a.cardsTotal || 0) : naLabel;
+      const quizCorrect = isLearn ? (a.quizCorrect !== undefined ? a.quizCorrect : (a.quizCorrectLive || 0)) : naLabel;
+      const quizAnswered = isLearn ? (a.quizAnswered !== undefined ? a.quizAnswered : 0) : naLabel;
+      const quizTotal = isLearn ? (a.quizTotal || 0) : naLabel;
+      rows.push([moduleNavLabel(i), a.time||0, a.clicks||0, cardsRead, cardsShown, cardsTotal, quizCorrect, quizAnswered, quizTotal]);
     }
     const meta = [
-      ['Group', studentInfo.group], ['Dept', studentInfo.dept], ['ID', studentInfo.id],
-      ['NameEN', studentInfo.nameEn], ['NameZH', studentInfo.nameZh], ['Date', new Date().toISOString()]
+      [metaLabels[0], studentInfo.group], [metaLabels[1], studentInfo.dept], [metaLabels[2], studentInfo.id],
+      [metaLabels[3], studentInfo.nameEn], [metaLabels[4], studentInfo.nameZh], [metaLabels[5], new Date().toISOString()]
     ];
-    let csv = '﻿';
+    let csv = '\ufeff';
     meta.forEach(r => csv += r.join(',') + '\n');
     csv += '\n';
     rows.forEach(r => csv += r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',') + '\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = `5p_learning_record_${studentInfo.id || 'student'}.csv`;
+    const fnamePrefix = isZh ? '5P學習歷程記錄' : '5p_learning_record';
+    // Filename: prefix - group - name - date(YYYYMMDD), sanitized for filesystem safety
+    const sanitizeFnamePart = (v) => String(v || '').replace(/[\\\/:*?"<>|]/g, '').trim();
+    const fGroup = sanitizeFnamePart(studentInfo.group) || (isZh ? '未分組' : 'NoGroup');
+    const fName = sanitizeFnamePart(isZh ? studentInfo.nameZh : studentInfo.nameEn) || sanitizeFnamePart(studentInfo.nameZh) || sanitizeFnamePart(studentInfo.nameEn) || (isZh ? '未填寫' : 'Unnamed');
+    const now = new Date();
+    const yyyy = now.getFullYear();
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const dd = String(now.getDate()).padStart(2, '0');
+    const fDate = `${yyyy}${mm}${dd}`;
+    a.href = url; a.download = `${fnamePrefix}-${fGroup}-${fName}-${fDate}.csv`;
     a.click(); URL.revokeObjectURL(url);
   };
 
@@ -1041,7 +1167,7 @@ function App() {
       {[...Array(TOTAL).keys()].map(i => {
         const Icon = MODULE_ICONS[i] || IconBookOpen;
         return (
-          <button key={i} onClick={() => { setActive(i); setSidebarOpen(false); trackClick(); }}
+          <button key={i} onClick={() => { goTo(i); setSidebarOpen(false); trackClick(); }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors text-left ${
               active === i ? 'bg-[#004030] text-white dark:bg-[#D8C3A5] dark:text-[#004030]' : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300'
             }`}>
@@ -1054,16 +1180,16 @@ function App() {
   );
 
   const renderModuleContent = () => {
-    if (active === 0) return <ModuleZero t={t} lang={lang} onStart={() => { setActive(1); trackClick(); }} goToModule={(i) => { setActive(i); trackClick(); }} />;
+    if (active === 0) return <ModuleZero t={t} lang={lang} onStart={() => { goTo(1); trackClick(); }} goToModule={(i) => { goTo(i); trackClick(); }} speak={speak} speaking={speaking} paused={paused} pauseResumeSpeak={pauseResumeSpeak} stopSpeak={stopSpeak} speakingSource={speakingSource} onTrackClick={trackClick} />;
     if (active >= 1 && active <= NUM_LEARN) return (
-      <LearningModule idx={active} t={t} lang={lang} onCardRead={handleCardRead} onQuizSubmit={handleQuizSubmit} onTrackClick={trackClick} speak={speak} speaking={speaking} paused={paused} pauseResumeSpeak={pauseResumeSpeak} stopSpeak={stopSpeak} speakingSource={speakingSource} />
+      <LearningModule idx={active} t={t} lang={lang} onCardRead={handleCardRead} onQuizSubmit={handleQuizSubmit} onTrackClick={trackClick} speak={speak} speaking={speaking} paused={paused} pauseResumeSpeak={pauseResumeSpeak} stopSpeak={stopSpeak} speakingSource={speakingSource} saved={analytics['m'+active]} onProgress={saveModuleProgress} />
     );
     if (active === IDX_LAB) return <ModuleLab t={t} lang={lang} />;
     if (active === IDX_RES) return <ModuleResources t={t} lang={lang} />;
     if (active === IDX_ANA) return (
-      <ModuleAnalytics t={t} lang={lang} analytics={analytics} studentInfo={studentInfo} updateStudentInfo={updateStudentInfo}
+      <ModuleAnalytics key={'analytics-'+analyticsVisitKey} t={t} lang={lang} analytics={analytics} studentInfo={studentInfo} updateStudentInfo={updateStudentInfo}
         sanitizeId={sanitizeId} sanitizeName={sanitizeName} infoComplete={infoComplete} exportCSV={exportCSV}
-        clearHistory={clearHistory} setActive={setActive} speak={speak} stopSpeak={stopSpeak} speaking={speaking} paused={paused}
+        clearHistory={clearHistory} setActive={setActive} goTo={goTo} speak={speak} stopSpeak={stopSpeak} speaking={speaking} paused={paused}
         pauseResumeSpeak={pauseResumeSpeak} speakingSource={speakingSource} onTrackClick={trackClick} moduleNavLabel={moduleNavLabel} />
     );
     return null;
@@ -1112,15 +1238,22 @@ function App() {
             {renderModuleContent()}
           </div>
           <div className="flex items-center justify-between mt-12 pt-6 border-t border-slate-200 dark:border-slate-800">
-            <button onClick={() => active > 0 && (setActive(active-1), trackClick())} disabled={active === 0}
+            <button onClick={() => active > 0 && (goTo(active-1), trackClick())} disabled={active === 0}
               className="text-sm font-bold text-[#004030] dark:text-[#D8C3A5] disabled:opacity-30">{t.nav_prev}</button>
-            <button onClick={() => active < TOTAL-1 && (setActive(active+1), trackClick())} disabled={active === TOTAL-1}
+            <button onClick={() => active < TOTAL-1 && (goTo(active+1), trackClick())} disabled={active === TOTAL-1}
               className="text-sm font-bold text-[#004030] dark:text-[#D8C3A5] disabled:opacity-30">{t.nav_next}</button>
           </div>
 
           <footer className="ui-decoration mt-12 pt-6 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-400 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-            <p>{t.date} · {t.copyright}</p>
-            <p>{t.architect_label} <a href={t.architect_url} target="_blank" rel="noopener noreferrer" className="underline hover:text-[#004030] dark:hover:text-[#D8C3A5]">{t.architect_name}</a></p>
+            <div className="flex flex-col md:flex-row md:items-center gap-2">
+              <p>{t.date} · {t.copyright}</p>
+              <p>{t.architect_label} <a href={t.architect_url} target="_blank" rel="noopener noreferrer" className="underline hover:text-[#004030] dark:hover:text-[#D8C3A5]">{t.architect_name}</a></p>
+            </div>
+            <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="self-start md:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-xs font-medium text-[#004030] dark:text-[#D8C3A5]">
+              <IconChevronUp className="w-3.5 h-3.5" />
+              {t.back_to_top}
+            </button>
           </footer>
         </main>
       </div>
@@ -1131,7 +1264,7 @@ function App() {
 
 const FivePDiagram = ({ t, lang, goToModule }) => {
   const nodes = t.m0_modules.map((m, i) => ({ ...m, key: i }));
-  const cx = 340, cy = 320, orbit = 215, nodeR = 62;
+  const cx = 340, cy = 350, orbit = 235, nodeR = 78;
   const positions = [0,1,2,3,4].map(i => {
     const angle = -Math.PI/2 + i * (2*Math.PI/5);
     return { x: cx + orbit*Math.cos(angle), y: cy + orbit*Math.sin(angle) };
@@ -1140,7 +1273,7 @@ const FivePDiagram = ({ t, lang, goToModule }) => {
   return (
     <div onContextMenu={e => e.preventDefault()} className="ui-decoration mb-10 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 md:p-6 overflow-x-auto">
       <p className="text-xs text-slate-400 mb-2 text-center">{t.m0_diagram_hint}</p>
-      <svg draggable="false" viewBox="0 0 680 640" className="w-full max-w-2xl mx-auto" role="img" aria-label={t.m0_diagram_alt}>
+      <svg draggable="false" viewBox="0 0 680 720" className="w-full max-w-2xl mx-auto" role="img" aria-label={t.m0_diagram_alt}>
         <defs>
           <radialGradient id="hubGrad" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor="#0a5c45" />
@@ -1150,8 +1283,8 @@ const FivePDiagram = ({ t, lang, goToModule }) => {
         {positions.map((p, i) => (
           <line key={'l'+i} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="currentColor" className="text-slate-300 dark:text-slate-600" strokeWidth="1.5" strokeDasharray="4 3" />
         ))}
-        <circle cx={cx} cy={cy} r="62" fill="url(#hubGrad)" />
-        <text x={cx} y={cy - 6} textAnchor="middle" fill="#D8C3A5" fontSize="13" fontWeight="700" fontFamily="Merriweather, serif">{lang === 'zh' ? '五對' : '5 Pairs'}</text>
+        <circle cx={cx} cy={cy} r="68" fill="url(#hubGrad)" />
+        <text x={cx} y={cy - 6} textAnchor="middle" fill="#D8C3A5" fontSize="13" fontWeight="700" fontFamily="Merriweather, serif">{lang === 'zh' ? '5對' : '5 Pairs'}</text>
         <text x={cx} y={cy + 13} textAnchor="middle" fill="#ffffff" fontSize="12" fontWeight="700" fontFamily="Merriweather, serif">{lang === 'zh' ? 'P 原則' : 'of P'}</text>
         {positions.map((p, i) => {
           const words = nodes[i].title.split(' ');
@@ -1162,16 +1295,16 @@ const FivePDiagram = ({ t, lang, goToModule }) => {
               role={goToModule ? 'button' : undefined} aria-label={goToModule ? nodes[i].title : undefined}>
               <circle cx={p.x} cy={p.y} r={nodeR} fill={colors[i]} opacity="0.94" className="transition-opacity hover:opacity-100" />
               <circle cx={p.x} cy={p.y} r={nodeR} fill="none" stroke="#ffffff" strokeOpacity="0.3" strokeWidth="1.5" />
-              <text x={p.x} y={p.y - 30} textAnchor="middle" fill="#ffffff" fontSize="14" fontWeight="800" fontFamily="Merriweather, serif" opacity="0.85">{nodes[i].num}</text>
-              <text x={p.x} y={p.y - 6} textAnchor="middle" fill="#ffffff" fontSize="12" fontWeight="700" fontFamily="Merriweather, serif">
-                {line1.length > 12 ? line1.slice(0, 12) : line1}
+              <text x={p.x} y={p.y - 38} textAnchor="middle" fill="#ffffff" fontSize="15" fontWeight="800" fontFamily="Merriweather, serif" opacity="0.85">{nodes[i].num}</text>
+              <text x={p.x} y={p.y - 12} textAnchor="middle" fill="#ffffff" fontSize="13" fontWeight="700" fontFamily="Merriweather, serif">
+                {line1.length > 14 ? line1.slice(0, 14) : line1}
               </text>
               {line2 && (
-                <text x={p.x} y={p.y + 11} textAnchor="middle" fill="#ffffff" fontSize="11" fontWeight="700" fontFamily="Merriweather, serif">
-                  {line2.length > 14 ? line2.slice(0, 14) : line2}
+                <text x={p.x} y={p.y + 9} textAnchor="middle" fill="#ffffff" fontSize="12" fontWeight="700" fontFamily="Merriweather, serif">
+                  {line2.length > 16 ? line2.slice(0, 16) : line2}
                 </text>
               )}
-              <text x={p.x} y={p.y + 30} textAnchor="middle" fill="#ffffff" fontSize="9" fontWeight="600" opacity="0.8">
+              <text x={p.x} y={p.y + 36} textAnchor="middle" fill="#ffffff" fontSize="10" fontWeight="600" opacity="0.8">
                 {lang === 'zh' ? '點擊前往 →' : 'Tap to open →'}
               </text>
             </g>
@@ -1191,11 +1324,26 @@ const FivePDiagram = ({ t, lang, goToModule }) => {
   );
 };
 
-const ModuleZero = ({ t, lang, onStart, goToModule }) => (
+const ModuleZero = ({ t, lang, onStart, goToModule, speak, speaking, paused, pauseResumeSpeak, stopSpeak, speakingSource, onTrackClick }) => {
+  const sectionTTS = (key, text, label, size) => {
+    const sourceKey = 'm0_' + key;
+    const speakSection = (txt, lng) => speak(txt, lng, sourceKey);
+    return (
+      <TTSControls t={t} lang={lang} text={text} speak={speakSection} speaking={speaking} paused={paused}
+        pauseResumeSpeak={pauseResumeSpeak} stopSpeak={stopSpeak} isActive={speakingSource === sourceKey}
+        onTrackClick={onTrackClick} label={label} size={size || 'sm'} />
+    );
+  };
+  const modulesText = t.m0_modules.map(m => m.title + '. ' + m.desc).join(' ');
+  return (
   <div>
     <div onContextMenu={e => e.preventDefault()} className="rounded-2xl bg-gradient-to-br from-[#004030] to-[#0a5c45] dark:from-[#1a1a1a] dark:to-[#2a2a2a] text-white p-8 md:p-12 mb-10">
       <p className="text-sm uppercase tracking-widest text-[#D8C3A5] mb-2">{t.subtitle}</p>
       <h1 className="text-3xl md:text-5xl font-serif font-black mb-4 leading-tight">{t.title}</h1>
+    </div>
+    <div className="flex items-center justify-between gap-2 mb-2">
+      <p className="text-xs uppercase tracking-wider text-slate-400">{t.overview_label}</p>
+      {sectionTTS('intro', t.m0_intro, t.audio_read)}
     </div>
     <p className="text-base leading-loose text-slate-600 dark:text-slate-300 mb-8 whitespace-pre-line">{t.m0_intro}</p>
 
@@ -1210,10 +1358,16 @@ const ModuleZero = ({ t, lang, onStart, goToModule }) => (
       ))}
     </div>
 
-    <H2>{t.m0_why}</H2>
+    <div className="flex items-center justify-between gap-2 mb-1">
+      <H2>{t.m0_why}</H2>
+      {sectionTTS('why', t.m0_why_desc, t.audio_read)}
+    </div>
     <p className="text-base leading-loose text-slate-600 dark:text-slate-300 mb-8">{t.m0_why_desc}</p>
 
-    <H2>{t.nav_modules}</H2>
+    <div className="flex items-center justify-between gap-2 mb-1">
+      <H2>{t.nav_modules}</H2>
+      {sectionTTS('modules', modulesText, t.audio_read)}
+    </div>
     <div className="space-y-3 mb-10">
       {t.m0_modules.map((m, i) => (
         <div key={i} className="flex items-start gap-4 p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
@@ -1227,15 +1381,15 @@ const ModuleZero = ({ t, lang, onStart, goToModule }) => (
     </div>
     <button onClick={onStart} className="px-6 py-3 bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] font-bold rounded-xl hover:opacity-90 transition-opacity">{t.m0_start}</button>
   </div>
-);
+  );
+};
 
-const LearningModule = ({ idx, t, lang, onCardRead, onQuizSubmit, onTrackClick, speak, speaking, paused, pauseResumeSpeak, stopSpeak, speakingSource }) => {
+const LearningModule = ({ idx, t, lang, onCardRead, onQuizSubmit, onTrackClick, speak, speaking, paused, pauseResumeSpeak, stopSpeak, speakingSource, saved, onProgress }) => {
   const p = `m${idx}_`;
   const paragraphs = [1,2,3,4].map(n => t[p+'p'+n]).filter(Boolean);
   const overviewText = t[p+'overview'];
   const deepDiveText = paragraphs.join(' ');
   const wrapupText = t[p+'wrapup'];
-  const fullText = [t[p+'title'], overviewText, deepDiveText, wrapupText].join(' ');
 
   const sectionTTS = (key, text, label, size) => {
     const sourceKey = 'm' + idx + '_' + key;
@@ -1250,10 +1404,6 @@ const LearningModule = ({ idx, t, lang, onCardRead, onQuizSubmit, onTrackClick, 
   return (
     <div>
       <H2>{t[p+'title']}</H2>
-      <div className="flex items-center gap-2 mb-4">
-        {sectionTTS('full', fullText, t.audio_read, 'md')}
-      </div>
-
       <div className="flex items-center justify-between gap-2 mb-1">
         <p className="text-xs uppercase tracking-wider text-slate-400">{t.overview_label}</p>
         {sectionTTS('overview', overviewText, t.audio_read)}
@@ -1285,8 +1435,8 @@ const LearningModule = ({ idx, t, lang, onCardRead, onQuizSubmit, onTrackClick, 
         <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">{wrapupText}</p>
       </div>
 
-      <FlipCardDeck terms={t[p+'terms']} t={t} moduleId={idx} onCardRead={onCardRead} onTrackClick={onTrackClick} />
-      <ModuleQuiz questions={t[p+'q']} t={t} moduleId={idx} onQuizSubmit={onQuizSubmit} moduleName={t[p+'title']} onTrackClick={onTrackClick} />
+      <FlipCardDeck key={'cards-'+idx} terms={t[p+'terms']} t={t} moduleId={idx} onCardRead={onCardRead} onTrackClick={onTrackClick} saved={saved} onProgress={onProgress} />
+      <ModuleQuiz key={'quiz-'+idx} questions={t[p+'q']} t={t} moduleId={idx} onQuizSubmit={onQuizSubmit} moduleName={t[p+'title']} onTrackClick={onTrackClick} saved={saved} onProgress={onProgress} />
     </div>
   );
 };
@@ -1326,7 +1476,7 @@ const ModuleResources = ({ t, lang }) => (
   </div>
 );
 
-const ModuleAnalytics = ({ t, lang, analytics, studentInfo, updateStudentInfo, sanitizeId, sanitizeName, infoComplete, exportCSV, clearHistory, setActive, speak, stopSpeak, speaking, paused, pauseResumeSpeak, speakingSource, onTrackClick, moduleNavLabel }) => {
+const ModuleAnalytics = ({ t, lang, analytics, studentInfo, updateStudentInfo, sanitizeId, sanitizeName, infoComplete, exportCSV, clearHistory, setActive, goTo, speak, stopSpeak, speaking, paused, pauseResumeSpeak, speakingSource, onTrackClick, moduleNavLabel }) => {
   let totalTime = 0, totalClicks = 0, quizCorrectSum = 0, quizTotalSum = 0, cardsReadSum = 0, cardsTotalSum = 0;
   const weakModules = [];
   let anyQuizAttempted = false;
@@ -1334,14 +1484,15 @@ const ModuleAnalytics = ({ t, lang, analytics, studentInfo, updateStudentInfo, s
     const a = analytics['m'+i] || {};
     totalTime += a.time || 0;
     totalClicks += a.clicks || 0;
-    if (i >= 1 && i <= NUM_LEARN && a.quizTotal) {
+    // Only count as "attempted" once the learner has finished a full quiz pass (quizCorrect finalized by onQuizSubmit)
+    if (i >= 1 && i <= NUM_LEARN && a.quizTotal && a.quizCorrect !== undefined) {
       anyQuizAttempted = true;
       quizCorrectSum += a.quizCorrect || 0;
       quizTotalSum += a.quizTotal;
       const acc = Math.round((a.quizCorrect / a.quizTotal) * 100);
       if (acc < 75) weakModules.push({ idx: i, name: a.moduleName || moduleNavLabel(i), acc, wrong: a.quizWrong || [] });
     }
-    if (i >= 1 && i <= NUM_LEARN && a.cardsTotal) { cardsReadSum += a.cardsRead || 0; cardsTotalSum += a.cardsTotal; }
+    if (i >= 1 && i <= NUM_LEARN && a.cardsTotal && (a.cardsRead || a.cardsShown)) { cardsReadSum += a.cardsRead || 0; cardsTotalSum += a.cardsTotal; }
   }
   const overallAcc = quizTotalSum ? Math.round((quizCorrectSum / quizTotalSum) * 100) : null;
   const cardUsage = cardsTotalSum ? Math.round((cardsReadSum / cardsTotalSum) * 100) : null;
@@ -1394,8 +1545,16 @@ const ModuleAnalytics = ({ t, lang, analytics, studentInfo, updateStudentInfo, s
                   <td className="py-2 pr-4 font-medium">{moduleNavLabel(i)}</td>
                   <td className="py-2 pr-4">{a.time || 0} {t.analytics_sec}</td>
                   <td className="py-2 pr-4">{a.clicks || 0}</td>
-                  <td className="py-2 pr-4">{(i >= 1 && i <= NUM_LEARN && a.cardsTotal) ? `${a.cardsRead||0} / ${a.cardsTotal}` : '—'}</td>
-                  <td className="py-2 pr-4">{(i >= 1 && i <= NUM_LEARN && a.quizTotal) ? `${a.quizCorrect||0} / ${a.quizTotal}` : ((i >= 1 && i <= NUM_LEARN) ? t.analytics_no_data : '—')}</td>
+                  <td className="py-2 pr-4">{
+                    (i >= 1 && i <= NUM_LEARN)
+                      ? (a.cardsTotal ? `${a.cardsRead||0} / ${a.cardsShown||0} / ${a.cardsTotal}` : t.analytics_not_viewed)
+                      : '—'
+                  }</td>
+                  <td className="py-2 pr-4">{
+                    (i >= 1 && i <= NUM_LEARN)
+                      ? (a.quizTotal ? `${(a.quizCorrect !== undefined ? a.quizCorrect : (a.quizCorrectLive||0))} / ${(a.quizAnswered !== undefined ? a.quizAnswered : 0)} / ${a.quizTotal}` : t.analytics_not_viewed)
+                      : '—'
+                  }</td>
                 </tr>
               );
             })}
@@ -1422,7 +1581,7 @@ const ModuleAnalytics = ({ t, lang, analytics, studentInfo, updateStudentInfo, s
                 {w.wrong.length > 0 && (
                   <p className="text-xs text-slate-500 mt-1">{t.analytics_wp_incorrect} {w.wrong.join(' / ')}</p>
                 )}
-                <button onClick={() => setActive(w.idx)} className="text-xs font-bold text-[#004030] dark:text-[#D8C3A5] underline mt-1">{t.analytics_wp_goto}</button>
+                <button onClick={() => goTo(w.idx)} className="text-xs font-bold text-[#004030] dark:text-[#D8C3A5] underline mt-1">{t.analytics_wp_goto}</button>
               </div>
             ))}
           </div>
