@@ -1088,7 +1088,7 @@ function App() {
           </div>
           <div className="flex items-center gap-2">
             <TTSControls t={t} lang={lang} text={headerSpeechText()} speak={(txt, lng) => speak(txt, lng, 'header')} speaking={speaking} paused={paused}
-              pauseResumeSpeak={pauseResumeSpeak} stopSpeak={stopSpeak} isActive={speakingSource === 'header'}
+              pauseResumeSpeak={pauseResumeSpeak} stopSpeak={stopSpeak} isActive={speaking}
               onTrackClick={trackClick} label={t.audio_read} size="md" />
             <button onClick={() => setLang(l => l === 'zh' ? 'en' : 'zh')}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800">
