@@ -502,7 +502,7 @@ const dict = {
   }
 };
 
-const FlipCardDeck = ({ terms, t, moduleId, onCardRead }) => {
+const FlipCardDeck = ({ terms, t, moduleId, onCardRead, onTrackClick }) => {
   const [groupIdx, setGroupIdx] = useState(0);
   const [flipped, setFlipped] = useState({});
   const [readSet, setReadSet] = useState(new Set());
@@ -520,6 +520,7 @@ const FlipCardDeck = ({ terms, t, moduleId, onCardRead }) => {
   }, [groupIdx]);
 
   const handleFlip = (origIdx) => {
+    if (onTrackClick) onTrackClick();
     setFlipped(f => ({ ...f, [origIdx]: !f[origIdx] }));
     if (!readSet.has(origIdx)) {
       const newRead = new Set(readSet); newRead.add(origIdx); setReadSet(newRead);
@@ -561,7 +562,7 @@ const FlipCardDeck = ({ terms, t, moduleId, onCardRead }) => {
   );
 };
 
-const ModuleQuiz = ({ questions, t, moduleId, onQuizSubmit, moduleName }) => {
+const ModuleQuiz = ({ questions, t, moduleId, onQuizSubmit, moduleName, onTrackClick }) => {
   const [selected, setSelected] = useState({});
   const [submitted, setSubmitted] = useState({});
   const [groupIdx, setGroupIdx] = useState(0);
@@ -620,7 +621,7 @@ const ModuleQuiz = ({ questions, t, moduleId, onQuizSubmit, moduleName }) => {
                 const isCorrect = origIdx === _d(q.ans);
                 const isSel = selected[qi] === dIdx;
                 return (
-                  <button key={dIdx} onClick={() => !isGrpSub && setSelected(s => ({...s, [qi]: dIdx}))}
+                  <button key={dIdx} onClick={() => { if (!isGrpSub) { setSelected(s => ({...s, [qi]: dIdx})); if (onTrackClick) onTrackClick(); } }}
                     className={`w-full text-left px-4 py-3 rounded-lg border transition-all text-sm ${
                       isGrpSub
                         ? isCorrect ? 'bg-green-100 border-green-500 dark:bg-green-900/30'
@@ -922,6 +923,20 @@ function App() {
 
   const stopSpeak = () => { window.speechSynthesis.cancel(); setSpeaking(false); };
 
+  const headerSpeechText = () => {
+    if (active === 0) return t.m0_title + '. ' + t.m0_intro;
+    if (active >= 1 && active <= NUM_LEARN) { const p = 'm'+active+'_'; return t[p+'title'] + '. ' + t[p+'overview']; }
+    if (active === IDX_LAB) return t.mlab_title + '. ' + t.mlab_desc;
+    if (active === IDX_RES) return t.mres_title + '. ' + t.mres_desc;
+    if (active === IDX_ANA) return t.analytics_title + '. ' + t.analytics_desc;
+    return t.brand;
+  };
+
+  const toggleHeaderSpeak = () => {
+    if (speaking) { stopSpeak(); return; }
+    speak(headerSpeechText(), lang);
+  };
+
   const moduleNavLabel = (i) => {
     if (i === 0) return t.m0_nav;
     if (i >= 1 && i <= NUM_LEARN) return t['m'+i+'_nav'];
@@ -991,7 +1006,7 @@ function App() {
   const renderModuleContent = () => {
     if (active === 0) return <ModuleZero t={t} lang={lang} onStart={() => { setActive(1); trackClick(); }} />;
     if (active >= 1 && active <= NUM_LEARN) return (
-      <LearningModule idx={active} t={t} lang={lang} onCardRead={handleCardRead} onQuizSubmit={handleQuizSubmit} speak={speak} speaking={speaking} stopSpeak={stopSpeak} />
+      <LearningModule idx={active} t={t} lang={lang} onCardRead={handleCardRead} onQuizSubmit={handleQuizSubmit} onTrackClick={trackClick} speak={speak} speaking={speaking} stopSpeak={stopSpeak} />
     );
     if (active === IDX_LAB) return <ModuleLab t={t} lang={lang} />;
     if (active === IDX_RES) return <ModuleResources t={t} lang={lang} />;
@@ -1012,10 +1027,20 @@ function App() {
       <header className="ui-decoration sticky top-0 z-40 bg-white/90 dark:bg-[#121212]/90 backdrop-blur border-b border-slate-200 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button onClick={() => setSidebarOpen(s => !s)} className="md:hidden p-2 -ml-2"><IconMenu className="w-5 h-5" /></button>
-            <span className="font-serif font-black text-lg text-[#004030] dark:text-[#D8C3A5] tracking-wider">{t.brand}</span>
+            <button onClick={() => setSidebarOpen(s => !s)} className="p-2 -ml-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" aria-label={t.nav_modules}>
+              {sidebarOpen ? <IconX className="w-5 h-5" /> : <IconMenu className="w-5 h-5" />}
+            </button>
+            <button onClick={() => { setActive(0); setSidebarOpen(false); trackClick(); }}
+              className="font-serif font-black text-lg text-[#004030] dark:text-[#D8C3A5] tracking-wider hover:opacity-70 transition-opacity" aria-label={t.nav_home}>
+              {t.brand}
+            </button>
           </div>
           <div className="flex items-center gap-2">
+            <button onClick={() => { toggleHeaderSpeak(); trackClick(); }} title={t.audio_read}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800">
+              {speaking ? <IconPause className="w-4 h-4" /> : <IconPlay className="w-4 h-4" />}
+              <span className="hidden sm:inline">{t.audio_read}</span>
+            </button>
             <button onClick={() => setLang(l => l === 'zh' ? 'en' : 'zh')}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800">
               <IconGlobe className="w-4 h-4" /> {lang === 'zh' ? 'EN' : '中文'}
@@ -1090,7 +1115,7 @@ const ModuleZero = ({ t, lang, onStart }) => (
   </div>
 );
 
-const LearningModule = ({ idx, t, lang, onCardRead, onQuizSubmit, speak, speaking, stopSpeak }) => {
+const LearningModule = ({ idx, t, lang, onCardRead, onQuizSubmit, onTrackClick, speak, speaking, stopSpeak }) => {
   const p = `m${idx}_`;
   const paragraphs = [1,2,3,4].map(n => t[p+'p'+n]).filter(Boolean);
   const fullText = [t[p+'overview'], ...paragraphs, t[p+'wrapup']].join(' ');
@@ -1127,8 +1152,8 @@ const LearningModule = ({ idx, t, lang, onCardRead, onQuizSubmit, speak, speakin
         <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">{t[p+'wrapup']}</p>
       </div>
 
-      <FlipCardDeck terms={t[p+'terms']} t={t} moduleId={idx} onCardRead={onCardRead} />
-      <ModuleQuiz questions={t[p+'q']} t={t} moduleId={idx} onQuizSubmit={onQuizSubmit} moduleName={t[p+'title']} />
+      <FlipCardDeck terms={t[p+'terms']} t={t} moduleId={idx} onCardRead={onCardRead} onTrackClick={onTrackClick} />
+      <ModuleQuiz questions={t[p+'q']} t={t} moduleId={idx} onQuizSubmit={onQuizSubmit} moduleName={t[p+'title']} onTrackClick={onTrackClick} />
     </div>
   );
 };
