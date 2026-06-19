@@ -1046,7 +1046,7 @@ function App() {
   const watchdogRef = useRef(null);
 
   const hardResetSpeechState = () => {
-    if (watchdogRef.current) { clearTimeout(watchdogRef.current); watchdogRef.current = null; }
+    if (watchdogRef.current) { clearInterval(watchdogRef.current); watchdogRef.current = null; }
     setSpeaking(false);
     setPaused(false);
     setSpeakingSource(null);
@@ -1055,7 +1055,7 @@ function App() {
   const speak = (text, voiceLang, source) => {
     if (!('speechSynthesis' in window)) return;
     const myToken = ++speakTokenRef.current;
-    if (watchdogRef.current) { clearTimeout(watchdogRef.current); watchdogRef.current = null; }
+    if (watchdogRef.current) { clearInterval(watchdogRef.current); watchdogRef.current = null; }
     window.speechSynthesis.cancel();
     setSpeaking(true);
     setPaused(false);
@@ -1072,15 +1072,28 @@ function App() {
         ? voices.find(v => v.name.includes('Yating') || v.name.includes('雅婷') || v.lang === 'zh-TW')
         : voices.find(v => v.name.includes('Daniel') || (v.lang === 'en-GB' && v.name.toLowerCase().includes('male')));
       if (preferred) utter.voice = preferred;
-      utter.onstart = () => { if (watchdogRef.current) { clearTimeout(watchdogRef.current); watchdogRef.current = null; } };
+      let started = false;
+      utter.onstart = () => { started = true; };
       utter.onend = () => { if (speakTokenRef.current === myToken) hardResetSpeechState(); };
       utter.onerror = () => { if (speakTokenRef.current === myToken) hardResetSpeechState(); };
       window.speechSynthesis.speak(utter);
-      // Watchdog: if the engine never confirms it actually started within 1.5s,
-      // assume it's wedged and force the UI back to an idle, clickable state.
-      watchdogRef.current = setTimeout(() => {
-        if (speakTokenRef.current === myToken) hardResetSpeechState();
-      }, 1500);
+      // Watchdog: some engines (notably certain zh-TW voice packs) are slow to fire
+      // onstart — a short fixed timeout would reset the UI while audio is still
+      // about to play. Instead, poll speechSynthesis.speaking/pending every 500ms;
+      // only force-reset once BOTH onstart never fired AND the engine itself
+      // reports it is no longer speaking or pending (a true wedge/failure), and
+      // give it a longer grace window (8s) before giving up.
+      let elapsed = 0;
+      watchdogRef.current = setInterval(() => {
+        if (speakTokenRef.current !== myToken) { clearInterval(watchdogRef.current); watchdogRef.current = null; return; }
+        elapsed += 500;
+        if (started) { clearInterval(watchdogRef.current); watchdogRef.current = null; return; }
+        const stillActive = window.speechSynthesis.speaking || window.speechSynthesis.pending;
+        if (!stillActive || elapsed >= 8000) {
+          clearInterval(watchdogRef.current); watchdogRef.current = null;
+          hardResetSpeechState();
+        }
+      }, 500);
     }, 50);
   };
 
