@@ -922,6 +922,7 @@ function App() {
   const [isDark, setIsDark] = useState(true);
   const [active, setActive] = useState(0);
   const goTo = (i) => {
+    stopSpeak();
     setActive(i);
     if (i === IDX_ANA) setAnalyticsVisitKey(k => k + 1);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1035,36 +1036,64 @@ function App() {
     });
   };
 
+  // Ref-based watchdog: guards against the Chrome/Edge speechSynthesis bug where
+  // rapid cancel()->speak() cycles (e.g. switching tabs/language repeatedly) leave
+  // the engine silently stuck — no onstart/onend/onerror ever fires, so React state
+  // (speaking/paused) gets stranded "stuck on" and every subsequent play/pause/stop
+  // click looks like a no-op. speakTokenRef invalidates any stale utterance callbacks
+  // and a short watchdog timer force-resets state if onstart never arrives.
+  const speakTokenRef = useRef(0);
+  const watchdogRef = useRef(null);
+
+  const hardResetSpeechState = () => {
+    if (watchdogRef.current) { clearTimeout(watchdogRef.current); watchdogRef.current = null; }
+    setSpeaking(false);
+    setPaused(false);
+    setSpeakingSource(null);
+  };
+
   const speak = (text, voiceLang, source) => {
     if (!('speechSynthesis' in window)) return;
+    const myToken = ++speakTokenRef.current;
+    if (watchdogRef.current) { clearTimeout(watchdogRef.current); watchdogRef.current = null; }
     window.speechSynthesis.cancel();
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = voiceLang === 'zh' ? 'zh-TW' : 'en-GB';
-    const voices = window.speechSynthesis.getVoices();
-    const preferred = voiceLang === 'zh'
-      ? voices.find(v => v.name.includes('Yating') || v.name.includes('雅婷') || v.lang === 'zh-TW')
-      : voices.find(v => v.name.includes('Daniel') || (v.lang === 'en-GB' && v.name.toLowerCase().includes('male')));
-    if (preferred) utter.voice = preferred;
-    utter.onend = () => { setSpeaking(false); setPaused(false); setSpeakingSource(null); };
-    utter.onerror = () => { setSpeaking(false); setPaused(false); setSpeakingSource(null); };
     setSpeaking(true);
     setPaused(false);
     setSpeakingSource(source || null);
-    window.speechSynthesis.speak(utter);
+    // Defer the new utterance one tick past cancel() — calling speak() in the same
+    // tick as cancel() is exactly the sequence that can wedge the browser's speech
+    // engine when it happens repeatedly in quick succession.
+    setTimeout(() => {
+      if (speakTokenRef.current !== myToken) return; // superseded by a newer speak() call
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = voiceLang === 'zh' ? 'zh-TW' : 'en-GB';
+      const voices = window.speechSynthesis.getVoices();
+      const preferred = voiceLang === 'zh'
+        ? voices.find(v => v.name.includes('Yating') || v.name.includes('雅婷') || v.lang === 'zh-TW')
+        : voices.find(v => v.name.includes('Daniel') || (v.lang === 'en-GB' && v.name.toLowerCase().includes('male')));
+      if (preferred) utter.voice = preferred;
+      utter.onstart = () => { if (watchdogRef.current) { clearTimeout(watchdogRef.current); watchdogRef.current = null; } };
+      utter.onend = () => { if (speakTokenRef.current === myToken) hardResetSpeechState(); };
+      utter.onerror = () => { if (speakTokenRef.current === myToken) hardResetSpeechState(); };
+      window.speechSynthesis.speak(utter);
+      // Watchdog: if the engine never confirms it actually started within 1.5s,
+      // assume it's wedged and force the UI back to an idle, clickable state.
+      watchdogRef.current = setTimeout(() => {
+        if (speakTokenRef.current === myToken) hardResetSpeechState();
+      }, 1500);
+    }, 50);
   };
 
   const pauseResumeSpeak = () => {
     if (!('speechSynthesis' in window)) return;
-    if (!speaking) return;
     if (paused) { window.speechSynthesis.resume(); setPaused(false); }
     else { window.speechSynthesis.pause(); setPaused(true); }
   };
 
   const stopSpeak = () => {
+    speakTokenRef.current++; // invalidate any in-flight/queued speak() call
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-    setSpeaking(false);
-    setPaused(false);
-    setSpeakingSource(null);
+    hardResetSpeechState();
   };
 
   const headerSpeechText = () => {
@@ -1215,7 +1244,7 @@ function App() {
             <TTSControls t={t} lang={lang} text={headerSpeechText()} speak={(txt, lng) => speak(txt, lng, 'header')} speaking={speaking} paused={paused}
               pauseResumeSpeak={pauseResumeSpeak} stopSpeak={stopSpeak} isActive={speaking}
               onTrackClick={trackClick} label={t.audio_read} size="md" />
-            <button onClick={() => setLang(l => l === 'zh' ? 'en' : 'zh')}
+            <button onClick={() => { stopSpeak(); setLang(l => l === 'zh' ? 'en' : 'zh'); }}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800">
               <IconGlobe className="w-4 h-4" /> {lang === 'zh' ? 'EN' : '中文'}
             </button>
@@ -1608,33 +1637,4 @@ const ModuleAnalytics = ({ t, lang, analytics, studentInfo, updateStudentInfo, s
               className="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm" />
           </div>
           <div>
-            <label className="block text-xs font-bold mb-1">{t.analytics_id}</label>
-            <input value={studentInfo.id} onChange={e => updateStudentInfo('id', sanitizeId(e.target.value))} placeholder={t.analytics_id_ph}
-              className="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm" />
-          </div>
-          <div>
-            <label className="block text-xs font-bold mb-1">{t.analytics_name_en}</label>
-            <input value={studentInfo.nameEn} onChange={e => updateStudentInfo('nameEn', sanitizeName(e.target.value))} placeholder={t.analytics_name_en_ph}
-              className="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm" />
-          </div>
-          <div>
-            <label className="block text-xs font-bold mb-1">{t.analytics_name_zh}</label>
-            <input value={studentInfo.nameZh} onChange={e => updateStudentInfo('nameZh', sanitizeName(e.target.value))} placeholder={t.analytics_name_zh_ph}
-              className="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm" />
-          </div>
-        </div>
-        <div className="mt-4 flex items-center gap-3 flex-wrap">
-          <button onClick={exportCSV} disabled={!infoComplete}
-            className="px-4 py-2 text-sm bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] font-bold rounded-lg disabled:opacity-40">{t.analytics_export_csv}</button>
-          {!infoComplete && <p className="text-xs text-slate-400">{t.analytics_fill_required}</p>}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
-  </script>
-</body>
-</html>
+            <label classNa
