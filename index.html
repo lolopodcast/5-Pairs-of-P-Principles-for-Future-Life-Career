@@ -1637,4 +1637,33 @@ const ModuleAnalytics = ({ t, lang, analytics, studentInfo, updateStudentInfo, s
               className="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm" />
           </div>
           <div>
-            <label classNa
+            <label className="block text-xs font-bold mb-1">{t.analytics_id}</label>
+            <input value={studentInfo.id} onChange={e => updateStudentInfo('id', sanitizeId(e.target.value))} placeholder={t.analytics_id_ph}
+              className="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm" />
+          </div>
+          <div>
+            <label className="block text-xs font-bold mb-1">{t.analytics_name_en}</label>
+            <input value={studentInfo.nameEn} onChange={e => updateStudentInfo('nameEn', sanitizeName(e.target.value))} placeholder={t.analytics_name_en_ph}
+              className="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm" />
+          </div>
+          <div>
+            <label className="block text-xs font-bold mb-1">{t.analytics_name_zh}</label>
+            <input value={studentInfo.nameZh} onChange={e => updateStudentInfo('nameZh', sanitizeName(e.target.value))} placeholder={t.analytics_name_zh_ph}
+              className="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm" />
+          </div>
+        </div>
+        <div className="mt-4 flex items-center gap-3 flex-wrap">
+          <button onClick={exportCSV} disabled={!infoComplete}
+            className="px-4 py-2 text-sm bg-[#004030] dark:bg-[#D8C3A5] text-white dark:text-[#004030] font-bold rounded-lg disabled:opacity-40">{t.analytics_export_csv}</button>
+          {!infoComplete && <p className="text-xs text-slate-400">{t.analytics_fill_required}</p>}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+  </script>
+</body>
+</html>
