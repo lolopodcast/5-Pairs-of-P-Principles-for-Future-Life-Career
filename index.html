@@ -927,7 +927,8 @@ function App() {
     if (i === IDX_ANA) setAnalyticsVisitKey(k => k + 1);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(() => typeof window !== 'undefined' && window.innerWidth >= 768);
+  const [isDesktop, setIsDesktop] = useState(() => typeof window !== 'undefined' && window.innerWidth >= 768);
   const [speaking, setSpeaking] = useState(false);
   const [paused, setPaused] = useState(false);
   const [speakingSource, setSpeakingSource] = useState(null);
@@ -941,6 +942,20 @@ function App() {
   useEffect(() => {
     document.documentElement.classList.toggle('dark', isDark);
   }, [isDark]);
+
+  // Keep the sidebar's default open/closed state in sync with viewport width
+  // (desktop opens by default, mobile closes by default), while still letting
+  // the hamburger button fully override this at any width.
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 768px)');
+    const handleChange = (e) => { setSidebarOpen(e.matches); setIsDesktop(e.matches); };
+    if (mq.addEventListener) mq.addEventListener('change', handleChange);
+    else mq.addListener(handleChange);
+    return () => {
+      if (mq.removeEventListener) mq.removeEventListener('change', handleChange);
+      else mq.removeListener(handleChange);
+    };
+  }, []);
 
   useEffect(() => {
     try {
@@ -1269,12 +1284,15 @@ function App() {
       </header>
 
       <div className="max-w-7xl mx-auto flex">
-        <aside className={`fixed md:sticky top-16 md:top-16 left-0 z-30 w-72 md:w-64 h-[calc(100vh-4rem)] bg-white dark:bg-[#121212] border-r border-slate-200 dark:border-slate-800 p-4 overflow-y-auto transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+        <aside
+          className="fixed top-16 left-0 z-30 w-72 md:w-64 h-[calc(100vh-4rem)] bg-white dark:bg-[#121212] border-r border-slate-200 dark:border-slate-800 p-4 overflow-y-auto transition-transform duration-300"
+          style={{ transform: sidebarOpen ? 'translateX(0)' : 'translateX(-100%)' }}
+        >
           <SidebarContent />
         </aside>
-        {sidebarOpen && <div onClick={() => setSidebarOpen(false)} className="fixed inset-0 bg-black/40 z-20 md:hidden" />}
+        {sidebarOpen && <div onClick={() => setSidebarOpen(false)} className="fixed inset-0 bg-black/40 z-20" />}
 
-        <main className="flex-1 min-w-0 px-4 md:px-10 py-8 md:py-12">
+        <main className="flex-1 min-w-0 px-4 md:px-10 py-8 md:py-12 transition-[margin] duration-300" style={{ marginLeft: sidebarOpen && isDesktop ? '16rem' : 0 }}>
           <div key={active} className="animate-fade-in">
             {renderModuleContent()}
           </div>
